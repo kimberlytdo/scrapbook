@@ -1,9 +1,0 @@
-{
-  "name": "scrapbook",
-  "version": "1.0.0",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "packageManager": "npm@8.19.3"
-}

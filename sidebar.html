@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top" />
+    <!-- Add any external scripts and stylesheets here -->
+    <style>
+      body,
+      html {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <section id="index" />
+    <!-- bundled js and css will get inlined here during build -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script><script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script><script type="text/javascript">/*
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./src/client/utils/serverFunctions.ts":
+/*!*********************************************!*\
+  !*** ./src/client/utils/serverFunctions.ts ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+eval("\n\nObject.defineProperty(exports, \"__esModule\", ({\n  value: true\n}));\nexports.serverFunctions = void 0;\nvar gas_client_1 = __webpack_require__(/*! gas-client */ \"../../node_modules/gas-client/dist/index.js\");\nvar serverFunctions = new gas_client_1.GASClient({\n  // this is necessary for local development but will be ignored in production\n  allowedDevelopmentDomains: function (origin) {\n    return /https:\\/\\/.*\\.googleusercontent\\.com$/.test(origin);\n  }\n}).serverFunctions;\nexports.serverFunctions = serverFunctions;\n\n//# sourceURL=webpack://react-google-apps-script/./src/client/utils/serverFunctions.ts?");
+
+/***/ }),
+
+/***/ "./dev/index.js":
+/*!**********************!*\
+  !*** ./dev/index.js ***!
+  \**********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"react\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react_dom_client__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom/client */ \"../../node_modules/react-dom/client.js\");\n/* harmony import */ var _src_client_utils_serverFunctions_ts__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../src/client/utils/serverFunctions.ts */ \"./src/client/utils/serverFunctions.ts\");\n\n\n\nconst {\n  FILENAME,\n  PORT\n} = {\"NODE_ENV\":\"development\",\"PORT\":3000,\"FILENAME\":\"sidebar\"};\nconst DevServer = () => {\n  const iframe = react__WEBPACK_IMPORTED_MODULE_0___default().useRef(null);\n  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {\n    const handleRequest = event => {\n      const request = event.data;\n      const {\n        type,\n        functionName,\n        id,\n        args\n      } = request;\n      if (type !== 'REQUEST') return;\n      _src_client_utils_serverFunctions_ts__WEBPACK_IMPORTED_MODULE_2__.serverFunctions[functionName](...args).then(response => {\n        iframe.current.contentWindow.postMessage({\n          type: 'RESPONSE',\n          id,\n          status: 'SUCCESS',\n          response\n        }, `https://localhost:${PORT}`);\n      }).catch(err => {\n        iframe.current.contentWindow.postMessage({\n          type: 'RESPONSE',\n          id,\n          status: 'ERROR',\n          response: err\n        }, `https://localhost:${PORT}`);\n      });\n    };\n    window.addEventListener('message', handleRequest, false);\n  }, []);\n  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"div\", {\n    // we want our dev environment to fill the dialog window\n    style: {\n      width: '100%',\n      height: '100%'\n    }\n  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"iframe\", {\n    style: {\n      width: '100%',\n      height: '100%',\n      border: '0',\n      position: 'absolute'\n    },\n    ref: iframe,\n    src: `https://localhost:${PORT}/${FILENAME}-impl.html`\n  }));\n};\nconst container = document.getElementById('index');\nconst root = (0,react_dom_client__WEBPACK_IMPORTED_MODULE_1__.createRoot)(container);\nroot.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(DevServer, null));\n\n//# sourceURL=webpack://react-google-apps-script/./dev/index.js?");
+
+/***/ }),
+
+/***/ "../../node_modules/gas-client/dist/index.js":
+/*!***************************************************!*\
+  !*** ../../node_modules/gas-client/dist/index.js ***!
+  \***************************************************/
+/***/ ((module) => {
+
+eval("!function(e,t){ true?module.exports=t():0}(self,(()=>(()=>{\"use strict\";var e={864:(e,t)=>{Object.defineProperty(t,\"__esModule\",{value:!0}),t.FunctionHost=void 0;var n=function(){function e(){this._serverFunctions={}}return Object.defineProperty(e.prototype,\"serverFunctions\",{get:function(){return this._serverFunctions},enumerable:!1,configurable:!0}),e}();t.FunctionHost=n},925:function(e,t,n){var r,o=this&&this.__extends||(r=function(e,t){return r=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(e,t){e.__proto__=t}||function(e,t){for(var n in t)Object.prototype.hasOwnProperty.call(t,n)&&(e[n]=t[n])},r(e,t)},function(e,t){if(\"function\"!=typeof t&&null!==t)throw new TypeError(\"Class extends value \"+String(t)+\" is not a constructor or null\");function n(){this.constructor=e}r(e,t),e.prototype=null===t?Object.create(t):(n.prototype=t.prototype,new n)}),u=this&&this.__assign||function(){return u=Object.assign||function(e){for(var t,n=1,r=arguments.length;n<r;n++)for(var o in t=arguments[n])Object.prototype.hasOwnProperty.call(t,o)&&(e[o]=t[o]);return e},u.apply(this,arguments)};Object.defineProperty(t,\"__esModule\",{value:!0}),t.GASPromises=void 0;var i=n(809),l=n(670),a=function(e){function t(){var t=e.call(this)||this;return t.promisifyGASFunctions(),t}return o(t,e),t.prototype.promisifyGASFunctions=function(){this._serverFunctions=Object.keys(google.script.run).reduce((function(e,t){var n;return i.ignoredFunctionNames.includes(t)?e:u(u({},e),((n={})[t]=(0,l.promisify)(t),n))}),{})},t}(n(864).FunctionHost);t.GASPromises=a},520:function(e,t,n){var r,o=this&&this.__extends||(r=function(e,t){return r=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(e,t){e.__proto__=t}||function(e,t){for(var n in t)Object.prototype.hasOwnProperty.call(t,n)&&(e[n]=t[n])},r(e,t)},function(e,t){if(\"function\"!=typeof t&&null!==t)throw new TypeError(\"Class extends value \"+String(t)+\" is not a constructor or null\");function n(){this.constructor=e}r(e,t),e.prototype=null===t?Object.create(t):(n.prototype=t.prototype,new n)});Object.defineProperty(t,\"__esModule\",{value:!0}),t.ServerProxy=void 0;var u=n(550),i=n(184),l=function(e){function t(t){var n=e.call(this)||this;return n._config=t,window.gasStore={},window.addEventListener(\"message\",n.buildMessageListener(),!1),n._serverFunctions=new Proxy({},{get:i.proxyHandler}),n}return o(t,e),t.prototype.buildMessageListener=function(){var e=this;return function(t){var n;if((0,u.checkAllowList)(t.origin,null===(n=e._config)||void 0===n?void 0:n.allowedDevelopmentDomains)&&\"RESPONSE\"===t.data.type){var r=t.data,o=r.response,i=r.status,l=r.id,a=window.gasStore[l],c=a.resolve,f=a.reject;\"ERROR\"===i&&f(o),c(o)}}},t}(n(864).FunctionHost);t.ServerProxy=l},550:(e,t)=>{Object.defineProperty(t,\"__esModule\",{value:!0}),t.checkAllowList=void 0,t.checkAllowList=function(e,t){return\"string\"==typeof t?t.split(\" \").some((function(t){return t===e})):\"function\"==typeof t&&!0===t(e)}},809:(e,t)=>{Object.defineProperty(t,\"__esModule\",{value:!0}),t.ignoredFunctionNames=void 0,t.ignoredFunctionNames=[\"withFailureHandler\",\"withLogger\",\"withSuccessHandler\",\"withUserObject\"]},662:(e,t)=>{Object.defineProperty(t,\"__esModule\",{value:!0}),t.isGASEnvironment=void 0,t.isGASEnvironment=function(){var e;return\"undefined\"!=typeof google&&Boolean(null===(e=null===google||void 0===google?void 0:google.script)||void 0===e?void 0:e.run)}},670:(e,t)=>{Object.defineProperty(t,\"__esModule\",{value:!0}),t.promisify=void 0,t.promisify=function(e){return function(){for(var t=[],n=0;n<arguments.length;n++)t[n]=arguments[n];return new Promise((function(n,r){var o;(o=google.script.run.withSuccessHandler(n).withFailureHandler(r))[e].apply(o,t)}))}}},184:function(e,t,n){var r=this&&this.__spreadArray||function(e,t,n){if(n||2===arguments.length)for(var r,o=0,u=t.length;o<u;o++)!r&&o in t||(r||(r=Array.prototype.slice.call(t,0,o)),r[o]=t[o]);return e.concat(r||Array.prototype.slice.call(t))};Object.defineProperty(t,\"__esModule\",{value:!0}),t.proxyHandler=void 0;var o=n(429);t.proxyHandler=function(e,t){var n=(0,o.v4)(),u=new Promise((function(e,t){window.gasStore[n]={resolve:e,reject:t}}));return function(){for(var e=[],o=0;o<arguments.length;o++)e[o]=arguments[o];return window.parent.postMessage({type:\"REQUEST\",id:n,functionName:t,args:r([],e,!0)},\"*\"),u}}},429:(e,t,n)=>{Object.defineProperty(t,\"__esModule\",{value:!0}),Object.defineProperty(t,\"NIL\",{enumerable:!0,get:function(){return l.default}}),Object.defineProperty(t,\"parse\",{enumerable:!0,get:function(){return s.default}}),Object.defineProperty(t,\"stringify\",{enumerable:!0,get:function(){return f.default}}),Object.defineProperty(t,\"v1\",{enumerable:!0,get:function(){return r.default}}),Object.defineProperty(t,\"v3\",{enumerable:!0,get:function(){return o.default}}),Object.defineProperty(t,\"v4\",{enumerable:!0,get:function(){return u.default}}),Object.defineProperty(t,\"v5\",{enumerable:!0,get:function(){return i.default}}),Object.defineProperty(t,\"validate\",{enumerable:!0,get:function(){return c.default}}),Object.defineProperty(t,\"version\",{enumerable:!0,get:function(){return a.default}});var r=d(n(990)),o=d(n(237)),u=d(n(355)),i=d(n(764)),l=d(n(314)),a=d(n(464)),c=d(n(435)),f=d(n(8)),s=d(n(222));function d(e){return e&&e.__esModule?e:{default:e}}},163:(e,t)=>{function n(e){return 14+(e+64>>>9<<4)+1}function r(e,t){const n=(65535&e)+(65535&t);return(e>>16)+(t>>16)+(n>>16)<<16|65535&n}function o(e,t,n,o,u,i){return r((l=r(r(t,e),r(o,i)))<<(a=u)|l>>>32-a,n);var l,a}function u(e,t,n,r,u,i,l){return o(t&n|~t&r,e,t,u,i,l)}function i(e,t,n,r,u,i,l){return o(t&r|n&~r,e,t,u,i,l)}function l(e,t,n,r,u,i,l){return o(t^n^r,e,t,u,i,l)}function a(e,t,n,r,u,i,l){return o(n^(t|~r),e,t,u,i,l)}Object.defineProperty(t,\"__esModule\",{value:!0}),t.default=void 0;t.default=function(e){if(\"string\"==typeof e){const t=unescape(encodeURIComponent(e));e=new Uint8Array(t.length);for(let n=0;n<t.length;++n)e[n]=t.charCodeAt(n)}return function(e){const t=[],n=32*e.length,r=\"0123456789abcdef\";for(let o=0;o<n;o+=8){const n=e[o>>5]>>>o%32&255,u=parseInt(r.charAt(n>>>4&15)+r.charAt(15&n),16);t.push(u)}return t}(function(e,t){e[t>>5]|=128<<t%32,e[n(t)-1]=t;let o=1732584193,c=-271733879,f=-1732584194,s=271733878;for(let t=0;t<e.length;t+=16){const n=o,d=c,p=f,v=s;o=u(o,c,f,s,e[t],7,-680876936),s=u(s,o,c,f,e[t+1],12,-389564586),f=u(f,s,o,c,e[t+2],17,606105819),c=u(c,f,s,o,e[t+3],22,-1044525330),o=u(o,c,f,s,e[t+4],7,-176418897),s=u(s,o,c,f,e[t+5],12,1200080426),f=u(f,s,o,c,e[t+6],17,-1473231341),c=u(c,f,s,o,e[t+7],22,-45705983),o=u(o,c,f,s,e[t+8],7,1770035416),s=u(s,o,c,f,e[t+9],12,-1958414417),f=u(f,s,o,c,e[t+10],17,-42063),c=u(c,f,s,o,e[t+11],22,-1990404162),o=u(o,c,f,s,e[t+12],7,1804603682),s=u(s,o,c,f,e[t+13],12,-40341101),f=u(f,s,o,c,e[t+14],17,-1502002290),c=u(c,f,s,o,e[t+15],22,1236535329),o=i(o,c,f,s,e[t+1],5,-165796510),s=i(s,o,c,f,e[t+6],9,-1069501632),f=i(f,s,o,c,e[t+11],14,643717713),c=i(c,f,s,o,e[t],20,-373897302),o=i(o,c,f,s,e[t+5],5,-701558691),s=i(s,o,c,f,e[t+10],9,38016083),f=i(f,s,o,c,e[t+15],14,-660478335),c=i(c,f,s,o,e[t+4],20,-405537848),o=i(o,c,f,s,e[t+9],5,568446438),s=i(s,o,c,f,e[t+14],9,-1019803690),f=i(f,s,o,c,e[t+3],14,-187363961),c=i(c,f,s,o,e[t+8],20,1163531501),o=i(o,c,f,s,e[t+13],5,-1444681467),s=i(s,o,c,f,e[t+2],9,-51403784),f=i(f,s,o,c,e[t+7],14,1735328473),c=i(c,f,s,o,e[t+12],20,-1926607734),o=l(o,c,f,s,e[t+5],4,-378558),s=l(s,o,c,f,e[t+8],11,-2022574463),f=l(f,s,o,c,e[t+11],16,1839030562),c=l(c,f,s,o,e[t+14],23,-35309556),o=l(o,c,f,s,e[t+1],4,-1530992060),s=l(s,o,c,f,e[t+4],11,1272893353),f=l(f,s,o,c,e[t+7],16,-155497632),c=l(c,f,s,o,e[t+10],23,-1094730640),o=l(o,c,f,s,e[t+13],4,681279174),s=l(s,o,c,f,e[t],11,-358537222),f=l(f,s,o,c,e[t+3],16,-722521979),c=l(c,f,s,o,e[t+6],23,76029189),o=l(o,c,f,s,e[t+9],4,-640364487),s=l(s,o,c,f,e[t+12],11,-421815835),f=l(f,s,o,c,e[t+15],16,530742520),c=l(c,f,s,o,e[t+2],23,-995338651),o=a(o,c,f,s,e[t],6,-198630844),s=a(s,o,c,f,e[t+7],10,1126891415),f=a(f,s,o,c,e[t+14],15,-1416354905),c=a(c,f,s,o,e[t+5],21,-57434055),o=a(o,c,f,s,e[t+12],6,1700485571),s=a(s,o,c,f,e[t+3],10,-1894986606),f=a(f,s,o,c,e[t+10],15,-1051523),c=a(c,f,s,o,e[t+1],21,-2054922799),o=a(o,c,f,s,e[t+8],6,1873313359),s=a(s,o,c,f,e[t+15],10,-30611744),f=a(f,s,o,c,e[t+6],15,-1560198380),c=a(c,f,s,o,e[t+13],21,1309151649),o=a(o,c,f,s,e[t+4],6,-145523070),s=a(s,o,c,f,e[t+11],10,-1120210379),f=a(f,s,o,c,e[t+2],15,718787259),c=a(c,f,s,o,e[t+9],21,-343485551),o=r(o,n),c=r(c,d),f=r(f,p),s=r(s,v)}return[o,c,f,s]}(function(e){if(0===e.length)return[];const t=8*e.length,r=new Uint32Array(n(t));for(let n=0;n<t;n+=8)r[n>>5]|=(255&e[n/8])<<n%32;return r}(e),8*e.length))}},790:(e,t)=>{Object.defineProperty(t,\"__esModule\",{value:!0}),t.default=void 0;var n={randomUUID:\"undefined\"!=typeof crypto&&crypto.randomUUID&&crypto.randomUUID.bind(crypto)};t.default=n},314:(e,t)=>{Object.defineProperty(t,\"__esModule\",{value:!0}),t.default=void 0,t.default=\"00000000-0000-0000-0000-000000000000\"},222:(e,t,n)=>{Object.defineProperty(t,\"__esModule\",{value:!0}),t.default=void 0;var r,o=(r=n(435))&&r.__esModule?r:{default:r};t.default=function(e){if(!(0,o.default)(e))throw TypeError(\"Invalid UUID\");let t;const n=new Uint8Array(16);return n[0]=(t=parseInt(e.slice(0,8),16))>>>24,n[1]=t>>>16&255,n[2]=t>>>8&255,n[3]=255&t,n[4]=(t=parseInt(e.slice(9,13),16))>>>8,n[5]=255&t,n[6]=(t=parseInt(e.slice(14,18),16))>>>8,n[7]=255&t,n[8]=(t=parseInt(e.slice(19,23),16))>>>8,n[9]=255&t,n[10]=(t=parseInt(e.slice(24,36),16))/1099511627776&255,n[11]=t/4294967296&255,n[12]=t>>>24&255,n[13]=t>>>16&255,n[14]=t>>>8&255,n[15]=255&t,n}},58:(e,t)=>{Object.defineProperty(t,\"__esModule\",{value:!0}),t.default=void 0,t.default=/^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i},319:(e,t)=>{let n;Object.defineProperty(t,\"__esModule\",{value:!0}),t.default=function(){if(!n&&(n=\"undefined\"!=typeof crypto&&crypto.getRandomValues&&crypto.getRandomValues.bind(crypto),!n))throw new Error(\"crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported\");return n(r)};const r=new Uint8Array(16)},757:(e,t)=>{function n(e,t,n,r){switch(e){case 0:return t&n^~t&r;case 1:case 3:return t^n^r;case 2:return t&n^t&r^n&r}}function r(e,t){return e<<t|e>>>32-t}Object.defineProperty(t,\"__esModule\",{value:!0}),t.default=void 0;t.default=function(e){const t=[1518500249,1859775393,2400959708,3395469782],o=[1732584193,4023233417,2562383102,271733878,3285377520];if(\"string\"==typeof e){const t=unescape(encodeURIComponent(e));e=[];for(let n=0;n<t.length;++n)e.push(t.charCodeAt(n))}else Array.isArray(e)||(e=Array.prototype.slice.call(e));e.push(128);const u=e.length/4+2,i=Math.ceil(u/16),l=new Array(i);for(let t=0;t<i;++t){const n=new Uint32Array(16);for(let r=0;r<16;++r)n[r]=e[64*t+4*r]<<24|e[64*t+4*r+1]<<16|e[64*t+4*r+2]<<8|e[64*t+4*r+3];l[t]=n}l[i-1][14]=8*(e.length-1)/Math.pow(2,32),l[i-1][14]=Math.floor(l[i-1][14]),l[i-1][15]=8*(e.length-1)&4294967295;for(let e=0;e<i;++e){const u=new Uint32Array(80);for(let t=0;t<16;++t)u[t]=l[e][t];for(let e=16;e<80;++e)u[e]=r(u[e-3]^u[e-8]^u[e-14]^u[e-16],1);let i=o[0],a=o[1],c=o[2],f=o[3],s=o[4];for(let e=0;e<80;++e){const o=Math.floor(e/20),l=r(i,5)+n(o,a,c,f)+s+t[o]+u[e]>>>0;s=f,f=c,c=r(a,30)>>>0,a=i,i=l}o[0]=o[0]+i>>>0,o[1]=o[1]+a>>>0,o[2]=o[2]+c>>>0,o[3]=o[3]+f>>>0,o[4]=o[4]+s>>>0}return[o[0]>>24&255,o[0]>>16&255,o[0]>>8&255,255&o[0],o[1]>>24&255,o[1]>>16&255,o[1]>>8&255,255&o[1],o[2]>>24&255,o[2]>>16&255,o[2]>>8&255,255&o[2],o[3]>>24&255,o[3]>>16&255,o[3]>>8&255,255&o[3],o[4]>>24&255,o[4]>>16&255,o[4]>>8&255,255&o[4]]}},8:(e,t,n)=>{Object.defineProperty(t,\"__esModule\",{value:!0}),t.default=void 0,t.unsafeStringify=i;var r,o=(r=n(435))&&r.__esModule?r:{default:r};const u=[];for(let e=0;e<256;++e)u.push((e+256).toString(16).slice(1));function i(e,t=0){return(u[e[t+0]]+u[e[t+1]]+u[e[t+2]]+u[e[t+3]]+\"-\"+u[e[t+4]]+u[e[t+5]]+\"-\"+u[e[t+6]]+u[e[t+7]]+\"-\"+u[e[t+8]]+u[e[t+9]]+\"-\"+u[e[t+10]]+u[e[t+11]]+u[e[t+12]]+u[e[t+13]]+u[e[t+14]]+u[e[t+15]]).toLowerCase()}t.default=function(e,t=0){const n=i(e,t);if(!(0,o.default)(n))throw TypeError(\"Stringified UUID is invalid\");return n}},990:(e,t,n)=>{Object.defineProperty(t,\"__esModule\",{value:!0}),t.default=void 0;var r,o=(r=n(319))&&r.__esModule?r:{default:r},u=n(8);let i,l,a=0,c=0;t.default=function(e,t,n){let r=t&&n||0;const f=t||new Array(16);let s=(e=e||{}).node||i,d=void 0!==e.clockseq?e.clockseq:l;if(null==s||null==d){const t=e.random||(e.rng||o.default)();null==s&&(s=i=[1|t[0],t[1],t[2],t[3],t[4],t[5]]),null==d&&(d=l=16383&(t[6]<<8|t[7]))}let p=void 0!==e.msecs?e.msecs:Date.now(),v=void 0!==e.nsecs?e.nsecs:c+1;const y=p-a+(v-c)/1e4;if(y<0&&void 0===e.clockseq&&(d=d+1&16383),(y<0||p>a)&&void 0===e.nsecs&&(v=0),v>=1e4)throw new Error(\"uuid.v1(): Can't create more than 10M uuids/sec\");a=p,c=v,l=d,p+=122192928e5;const _=(1e4*(268435455&p)+v)%4294967296;f[r++]=_>>>24&255,f[r++]=_>>>16&255,f[r++]=_>>>8&255,f[r++]=255&_;const g=p/4294967296*1e4&268435455;f[r++]=g>>>8&255,f[r++]=255&g,f[r++]=g>>>24&15|16,f[r++]=g>>>16&255,f[r++]=d>>>8|128,f[r++]=255&d;for(let e=0;e<6;++e)f[r+e]=s[e];return t||(0,u.unsafeStringify)(f)}},237:(e,t,n)=>{Object.defineProperty(t,\"__esModule\",{value:!0}),t.default=void 0;var r=u(n(296)),o=u(n(163));function u(e){return e&&e.__esModule?e:{default:e}}var i=(0,r.default)(\"v3\",48,o.default);t.default=i},296:(e,t,n)=>{Object.defineProperty(t,\"__esModule\",{value:!0}),t.URL=t.DNS=void 0,t.default=function(e,t,n){function r(e,r,i,l){var a;if(\"string\"==typeof e&&(e=function(e){e=unescape(encodeURIComponent(e));const t=[];for(let n=0;n<e.length;++n)t.push(e.charCodeAt(n));return t}(e)),\"string\"==typeof r&&(r=(0,u.default)(r)),16!==(null===(a=r)||void 0===a?void 0:a.length))throw TypeError(\"Namespace must be array-like (16 iterable integer values, 0-255)\");let c=new Uint8Array(16+e.length);if(c.set(r),c.set(e,r.length),c=n(c),c[6]=15&c[6]|t,c[8]=63&c[8]|128,i){l=l||0;for(let e=0;e<16;++e)i[l+e]=c[e];return i}return(0,o.unsafeStringify)(c)}try{r.name=e}catch(e){}return r.DNS=i,r.URL=l,r};var r,o=n(8),u=(r=n(222))&&r.__esModule?r:{default:r};const i=\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\";t.DNS=i;const l=\"6ba7b811-9dad-11d1-80b4-00c04fd430c8\";t.URL=l},355:(e,t,n)=>{Object.defineProperty(t,\"__esModule\",{value:!0}),t.default=void 0;var r=i(n(790)),o=i(n(319)),u=n(8);function i(e){return e&&e.__esModule?e:{default:e}}t.default=function(e,t,n){if(r.default.randomUUID&&!t&&!e)return r.default.randomUUID();const i=(e=e||{}).random||(e.rng||o.default)();if(i[6]=15&i[6]|64,i[8]=63&i[8]|128,t){n=n||0;for(let e=0;e<16;++e)t[n+e]=i[e];return t}return(0,u.unsafeStringify)(i)}},764:(e,t,n)=>{Object.defineProperty(t,\"__esModule\",{value:!0}),t.default=void 0;var r=u(n(296)),o=u(n(757));function u(e){return e&&e.__esModule?e:{default:e}}var i=(0,r.default)(\"v5\",80,o.default);t.default=i},435:(e,t,n)=>{Object.defineProperty(t,\"__esModule\",{value:!0}),t.default=void 0;var r,o=(r=n(58))&&r.__esModule?r:{default:r};t.default=function(e){return\"string\"==typeof e&&o.default.test(e)}},464:(e,t,n)=>{Object.defineProperty(t,\"__esModule\",{value:!0}),t.default=void 0;var r,o=(r=n(435))&&r.__esModule?r:{default:r};t.default=function(e){if(!(0,o.default)(e))throw TypeError(\"Invalid UUID\");return parseInt(e.slice(14,15),16)}}},t={};function n(r){var o=t[r];if(void 0!==o)return o.exports;var u=t[r]={exports:{}};return e[r].call(u.exports,u,u.exports,n),u.exports}var r={};return(()=>{var e=r;Object.defineProperty(e,\"__esModule\",{value:!0}),e.GASClient=void 0;var t=n(662),o=n(925),u=n(520),i=function(){function e(e){this._config=e,(0,t.isGASEnvironment)()?this._functionHost=new o.GASPromises:this._functionHost=new u.ServerProxy(this._config)}return Object.defineProperty(e.prototype,\"serverFunctions\",{get:function(){return this._functionHost.serverFunctions},enumerable:!1,configurable:!0}),e}();e.GASClient=i})(),r})()));\n\n//# sourceURL=webpack://react-google-apps-script/../../node_modules/gas-client/dist/index.js?");
+
+/***/ }),
+
+/***/ "../../node_modules/react-dom/client.js":
+/*!**********************************************!*\
+  !*** ../../node_modules/react-dom/client.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+eval("\n\nvar m = __webpack_require__(/*! react-dom */ \"react-dom\");\nif (false) {} else {\n  var i = m.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;\n  exports.createRoot = function(c, o) {\n    i.usingClientEntryPoint = true;\n    try {\n      return m.createRoot(c, o);\n    } finally {\n      i.usingClientEntryPoint = false;\n    }\n  };\n  exports.hydrateRoot = function(c, h, o) {\n    i.usingClientEntryPoint = true;\n    try {\n      return m.hydrateRoot(c, h, o);\n    } finally {\n      i.usingClientEntryPoint = false;\n    }\n  };\n}\n\n\n//# sourceURL=webpack://react-google-apps-script/../../node_modules/react-dom/client.js?");
+
+/***/ }),
+
+/***/ "react":
+/*!************************!*\
+  !*** external "React" ***!
+  \************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = React;
+
+/***/ }),
+
+/***/ "react-dom":
+/*!***************************!*\
+  !*** external "ReactDOM" ***!
+  \***************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = ReactDOM;
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	var __webpack_exports__ = __webpack_require__("./dev/index.js");
+/******/ 	
+/******/ })()
+;</script></body>
+</html>
