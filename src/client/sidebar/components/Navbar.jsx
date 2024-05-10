@@ -3,7 +3,7 @@ import { Tabs, Tab, Box } from '@mui/material';
 import Customize from './Customize Panel/Customize';
 import Remix from './Remix Panel/Remix';
 import History from './History Panel/History';
-import Inspirations from '../Inspirations Panel/Inspirations';
+import Inspirations from './Inspirations Panel/Inspirations';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

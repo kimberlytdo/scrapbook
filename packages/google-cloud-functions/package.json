@@ -1,6 +1,0 @@
-{
-  "name": "google-cloud-functions",
-  "dependencies": {
-    "@google-cloud/functions-framework": "^3.3.0"
-  }
-}
