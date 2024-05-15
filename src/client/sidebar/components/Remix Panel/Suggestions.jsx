@@ -2,18 +2,20 @@ import React, { useState } from 'react';
 import { List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { ContentCopy } from '@mui/icons-material';
 import axios from 'axios';
+import { serverFunctions } from '../../../utils/serverFunctions'
 
 function Suggestions() {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = (text) => {
-    const textField = document.createElement('textarea');
-    textField.innerText = text;
-    document.body.appendChild(textField);
-    textField.select();
-    document.execCommand('copy');
-    textField.remove();
-    setCopied(true);
+    // const textField = document.createElement('textarea');
+    // textField.innerText = text;
+    // document.body.appendChild(textField);
+    // textField.select();
+    // document.execCommand('copy');
+    // textField.remove();
+    // setCopied(true);
+    serverFunctions.insertGeneratedText(text);
   };
 
   const triggerAPI = async () => {
