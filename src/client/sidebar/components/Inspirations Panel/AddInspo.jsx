@@ -4,22 +4,42 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import AddIcon from '@mui/icons-material/Add';
 import { serverFunctions } from '../../../utils/serverFunctions';
+import { atom, useAtom } from 'jotai';
+import { InspoHistoryAtom } from './InspoData';
 
 function AddInspo() {
   const [inspoText, setInspoText] = useState('');
+  const [history, setHistory] = useAtom(InspoHistoryAtom);
 
   const addTextFromSelection = () => {
-    let text = serverFunctions.copyInspiration()
+    let text = serverFunctions.copyInspiration();
     // resolve promise
-    text.then(function(text) {
-      console.log(text)
+    text.then(function (text) {
+      console.log(text);
       setInspoText(text);
-    })
+    });
+  };
+
+  const addInspiration = () => {
+    setHistory([...history, inspoText])
   }
 
-  const handleContentChange = (e) => {
-    setInspoText(e.target.value)
+  const clearInspiration = () => {
+    setInspoText('');
   }
+
+  const readClipboardContent = () => {
+    const tempTextArea = document.createElement('textarea');
+    document.body.appendChild(tempTextArea);
+    tempTextArea.focus();
+    document.execCommand('paste');
+    setInspoText(tempTextArea.value);
+    document.body.removeChild(tempTextArea);
+  };
+
+  const handleContentChange = (e) => {
+    setInspoText(e.target.value);
+  };
 
   return (
     <div>
@@ -35,11 +55,15 @@ function AddInspo() {
         onChange={(e) => handleContentChange(e)}
       />
       <Stack spacing={1} direction={'column-reverse'}>
-        <Button variant="text">Clear</Button>
-        <Button variant="outlined">Paste from Clipboard</Button>
-        <Button varient="outlined" onClick={addTextFromSelection}>Paste from Selection</Button>
+        <Button variant="text" onClick={clearInspiration}>Clear</Button>
+        <Button variant="outlined" onClick={readClipboardContent}>
+          Paste from Clipboard
+        </Button>
+        <Button varient="outlined" onClick={addTextFromSelection}>
+          Paste from Selection
+        </Button>
         <Button variant="outlined">Auto-Add</Button>
-        <Button variant="contained" startIcon={<AddIcon />}>
+        <Button variant="contained" startIcon={<AddIcon />} onClick={addInspiration}>
           Add Inspiration
         </Button>
       </Stack>
