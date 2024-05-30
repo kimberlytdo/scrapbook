@@ -6,9 +6,10 @@ import AddIcon from '@mui/icons-material/Add';
 import { serverFunctions } from '../../../utils/serverFunctions';
 import { atom, useAtom } from 'jotai';
 import { InspoHistoryAtom } from './InspoData';
+import { currentInspoTextAtom } from './InspoData';
 
 function AddInspo() {
-  const [inspoText, setInspoText] = useState('');
+  const [inspoText, setInspoText] = useAtom(currentInspoTextAtom);
   const [history, setHistory] = useAtom(InspoHistoryAtom);
 
   const addTextFromSelection = () => {
@@ -21,18 +22,22 @@ function AddInspo() {
   };
 
   const addInspiration = () => {
-    setHistory([...history, inspoText])
-  }
+    if (inspoText !== "") {
+      setHistory([...history, inspoText]);
+    }
+  };
 
   const clearInspiration = () => {
     setInspoText('');
-  }
+  };
 
   const readClipboardContent = () => {
-    const tempTextArea = document.createElement('textarea');
+    // somehow does not work anymore? perhaps due to browser update
+    // need workaround
+    let tempTextArea = document.createElement('textarea');
     document.body.appendChild(tempTextArea);
     tempTextArea.focus();
-    document.execCommand('paste');
+    document.execCommand("paste", true)
     setInspoText(tempTextArea.value);
     document.body.removeChild(tempTextArea);
   };
@@ -55,7 +60,9 @@ function AddInspo() {
         onChange={(e) => handleContentChange(e)}
       />
       <Stack spacing={1} direction={'column-reverse'}>
-        <Button variant="text" onClick={clearInspiration}>Clear</Button>
+        <Button variant="text" onClick={clearInspiration}>
+          Clear
+        </Button>
         <Button variant="outlined" onClick={readClipboardContent}>
           Paste from Clipboard
         </Button>
@@ -63,7 +70,11 @@ function AddInspo() {
           Paste from Selection
         </Button>
         <Button variant="outlined">Auto-Add</Button>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={addInspiration}>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={addInspiration}
+        >
           Add Inspiration
         </Button>
       </Stack>
