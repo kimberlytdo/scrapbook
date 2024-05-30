@@ -11,9 +11,10 @@ import {
 } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { atom, useAtom } from 'jotai';
-import { InspoHistoryAtom } from './InspoData';
+import { InspoHistoryAtom, currentInspoTextAtom } from './InspoData';
 
 function CurrentInspo() {
+  const [inspoText, setInspoText] = useAtom(currentInspoTextAtom);
   const options = ['Copy', 'Edit', 'Delete'];
 
   const [history, setHistory] = useAtom(InspoHistoryAtom);
@@ -30,15 +31,23 @@ function CurrentInspo() {
 
   const handleMenuItemClick = (event, text) => {
     console.log(event, text)
-    if (event === 'Copy') {
-      console.log('Copy');
+    if (event === 'Edit') {
+      handleEdit(text)
     } else if (event === 'Delete') {
       handleDelete(text);
+    } else if (event === 'Copy') {
+      console.log("copy")
     }
   };
 
+  const handleEdit = (text) => {
+    setHistory((prev) => prev.filter((item) => item !== text));
+    setInspoText(text)
+
+  }
+
   const handleDelete = (text) => {
-    console.log(text);
+    // console.log(text);
     setHistory((prev) => prev.filter((item) => item !== text));
   };
 
