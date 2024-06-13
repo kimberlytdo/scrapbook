@@ -53,6 +53,7 @@ const DevServer = () => {
         }}
         ref={iframe}
         src={`https://localhost:${PORT}/${FILENAME}-impl.html`}
+        allow={'clipboard-read; clipboard-write'}
       />
     </div>
   );

@@ -7,6 +7,7 @@ import { serverFunctions } from '../../../utils/serverFunctions';
 import { atom, useAtom } from 'jotai';
 import { InspoHistoryAtom } from './InspoData';
 import { currentInspoTextAtom } from './InspoData';
+import * as clipboard from 'clipboard-polyfill';
 
 function AddInspo() {
   const [inspoText, setInspoText] = useAtom(currentInspoTextAtom);
@@ -22,7 +23,7 @@ function AddInspo() {
   };
 
   const addInspiration = () => {
-    if (inspoText !== "") {
+    if (inspoText !== '') {
       setHistory([...history, inspoText]);
     }
   };
@@ -31,15 +32,21 @@ function AddInspo() {
     setInspoText('');
   };
 
-  const readClipboardContent = () => {
-    // somehow does not work anymore? perhaps due to browser update
-    // need workaround
-    let tempTextArea = document.createElement('textarea');
-    document.body.appendChild(tempTextArea);
-    tempTextArea.focus();
-    document.execCommand("paste", true)
-    setInspoText(tempTextArea.value);
-    document.body.removeChild(tempTextArea);
+  const readClipboardContent = async () => {
+    // clipboard access is granted to the iframe wrapper
+    // when using this fuction, chrome will first ask for clipboard visit permission
+
+    // need to install clipboard-polyfill
+    // let text = await clipboard.readText();
+    navigator.clipboard
+      .readText()
+      .then((text) => {
+        setInspoText(text);
+      })
+      .catch((error) => {
+        console.error('Failed to read clipboard:', error);
+        // Handle the error, e.g. display an error message to the user
+      });
   };
 
   const handleContentChange = (e) => {
