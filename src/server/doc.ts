@@ -1,3 +1,9 @@
+export const getDocumentName = () => {
+  let name = DocumentApp.getActiveDocument().getName();
+  return name
+}
+
+
 export const insertGeneratedText = (insertText: string) => {
   let cursor = DocumentApp.getActiveDocument().getCursor();
   if (cursor) {

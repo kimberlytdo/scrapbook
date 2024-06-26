@@ -18,20 +18,21 @@ import { atom, useAtom } from 'jotai';
 import { InspoHistoryAtom, currentInspoTextAtom } from './InspoData';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
-export default function EditableTextarea({ text }) {
-  console.log(text);
+export default function EditableTextarea({ record }) {
   const [isEditable, setIsEditable] = useState(false);
-  const [currentText, setCurrentText] = useState(text);
-  const [tracebackText, setTracebackText] = useState(text);
+  const [currentRecord, setcurrentRecord] = useState(record);
+  const [tracebackRecord, settracebackRecord] = useState(record);
 
   const [history, setHistory] = useAtom(InspoHistoryAtom);
 
   const options = ['Copy', 'Edit', 'Delete'];
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -46,21 +47,22 @@ export default function EditableTextarea({ text }) {
     }
   };
 
-  const handleCopy = (text) => {
-    navigator.clipboard.writeText(text);
+  const handleCopy = (record) => {
+    navigator.clipboard.writeText(record.content);
   };
 
   const handleEdit = (prevText) => {
     setHistory((prev) =>
       prev.map((item) => {
         if (item === prevText) {
-          return currentText;
+          return currentRecord;
         }
         return item;
       })
     );
-    setTracebackText(currentText);
+    settracebackRecord(currentRecord);
     console.log(history);
+    setIsEditable(false);
   };
 
   const handleDelete = (text) => {
@@ -74,13 +76,19 @@ export default function EditableTextarea({ text }) {
           disabled={!isEditable}
           multiline
           rows={1}
-          onChange={(e) => setCurrentText(e.target.value)}
-          value={currentText}
+          onChange={(e, currentRecord) => {
+            let newContent = {
+              ...currentRecord,
+              content: e.target.value,
+            }
+            setcurrentRecord(newContent)
+          }}
+          value={currentRecord.content}
           // onSubmit={setIsEditable(false)}
         ></TextField>
         {isEditable ? (
           <>
-            <IconButton onClick={() => handleEdit(tracebackText)}>
+            <IconButton onClick={() => handleEdit(tracebackRecord)}>
               <CheckIcon />
             </IconButton>
           </>
@@ -112,7 +120,7 @@ export default function EditableTextarea({ text }) {
                   onClick={handleClose}
                 >
                   <ListItemText
-                    onClick={() => handleMenuItemClick(option, currentText)}
+                    onClick={() => handleMenuItemClick(option, currentRecord)}
                   >
                     {option}
                   </ListItemText>
