@@ -5,26 +5,31 @@ import Stack from '@mui/material/Stack';
 import AddIcon from '@mui/icons-material/Add';
 import { serverFunctions } from '../../../utils/serverFunctions';
 import { atom, useAtom } from 'jotai';
-import { InspoHistoryAtom } from './InspoData';
-import { currentInspoTextAtom } from './InspoData';
-import * as clipboard from 'clipboard-polyfill';
+import { InspoHistoryAtom, currentInspoTextAtom, IDAtom } from './InspoData';
 
 function AddInspo() {
   const [inspoText, setInspoText] = useAtom(currentInspoTextAtom);
   const [history, setHistory] = useAtom(InspoHistoryAtom);
+  const [ID, setID] = useAtom(IDAtom);
 
   const addTextFromSelection = () => {
     let text = serverFunctions.copyInspiration();
     // resolve promise
     text.then(function (text) {
-      console.log(text);
       setInspoText(text);
     });
   };
 
   const addInspiration = () => {
     if (inspoText !== '') {
-      setHistory([...history, inspoText]);
+      let newRecord = {
+        id: ID,
+        sourceDocumentName: 'test',
+        content: inspoText,
+      };
+      setHistory([...history, newRecord]);
+      setID(ID + 1);
+      setInspoText('');
     }
   };
 
@@ -73,7 +78,7 @@ function AddInspo() {
         <Button variant="outlined" onClick={readClipboardContent}>
           Paste from Clipboard
         </Button>
-        <Button varient="outlined" onClick={addTextFromSelection}>
+        <Button variant="outlined" onClick={addTextFromSelection}>
           Paste from Selection
         </Button>
         <Button variant="outlined">Auto-Add</Button>
