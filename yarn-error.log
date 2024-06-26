@@ -1,20 +1,30 @@
 Arguments: 
-  /opt/homebrew/Cellar/node/21.2.0/bin/node /opt/homebrew/Cellar/yarn/1.22.19/libexec/bin/yarn.js add @types/react-router --dev
+  C:\Program Files\nodejs\node.exe C:\Users\Motio\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js login
 
 PATH: 
-  /opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin:/opt/anaconda3/bin:/opt/anaconda3/condabin:/opt/homebrew/bin:/opt/homebrew/sbin
+  D:\Install\Anaconda\condabin;E:\Virtualization\VMware Workstation\bin\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;D:\Install\MATLAB\R2022a\bin;D:\Install\Git\cmd;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;D:\Install\CMake\bin;C:\Program Files\Docker\Docker\resources\bin;D:\Install\Pandoc\;C:\Program Files\dotnet\;D:\Install\Git LFS;D:\Install\Anaconda;D:\Install\Anaconda\Scripts;D:\Install\Anaconda\Library\bin;E:\Install\Graphviz\bin;E:\Install\Protoc\bin;E:\Install\ffmpeg\bin;%NVM_HOME%;%NVM_SYMLINK%;E:\Install\Ruby32-x64\bin;D:\Install\Python38\Scripts\;D:\Install\Python38\;C:\Program Files\MySQL\MySQL Shell 8.0\bin\;C:\Users\Motio\AppData\Local\Microsoft\WindowsApps;D:\Install\Microsoft VS Code\bin;C:\Users\Motio\AppData\Roaming\npm;D:\Project\V6++env\MinGW\bin;D:\Project\V6++env\NASM;C:\Program Files\MySQL\MySQL Server 8.0\bin;C:\Users\Motio\AppData\Local\GitHubDesktop\bin;C:\msys64\-mingw64\bin;D:\Install\Microsoft VS Code Insiders\bin;C:\Users\Motio\AppData\Local\Programs\oh-my-posh\bin;D:\Install\nvm;C:\Program Files\nodejs
 
 Yarn version: 
   1.22.19
 
 Node version: 
-  21.2.0
+  18.19.0
 
 Platform: 
-  darwin arm64
+  win32 x64
 
 Trace: 
-  Error: EACCES: permission denied, open '/Users/kimberlydo/.npmrc'
+  Error: canceled
+      at Interface.<anonymous> (C:\Users\Motio\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:137150:13)
+      at Interface.emit (node:events:517:28)
+      at [_ttyWrite] [as _ttyWrite] (node:internal/readline/interface:1132:18)
+      at ReadStream.onkeypress (node:internal/readline/interface:271:20)
+      at ReadStream.emit (node:events:517:28)
+      at emitKeys (node:internal/readline/utils:371:14)
+      at emitKeys.next (<anonymous>)
+      at ReadStream.onData (node:internal/readline/emitKeypressEvents:64:36)
+      at ReadStream.emit (node:events:517:28)
+      at addChunk (node:internal/streams/readable:368:12)
 
 npm manifest: 
   {
@@ -56,17 +66,27 @@ npm manifest:
       "@emotion/react": "^11.11.4",
       "@emotion/styled": "^11.11.5",
       "@fontsource/roboto": "^5.0.13",
+      "@googleapis/docs": "^3.0.1",
+      "@googleapis/drive": "^8.7.1",
       "@mui/icons-material": "^5.15.15",
       "@mui/material": "^5.15.15",
       "@mui/styled-engine-sc": "^6.0.0-alpha.18",
+      "@types/react-redux": "^7.1.33",
       "@types/react-router": "^5.1.20",
+      "axios": "^1.6.8",
+      "google-auth-library": "^9.9.0",
+      "googleapis": "^136.0.0",
       "prop-types": "^15.8.1",
       "react": "^18.3.1",
       "react-bootstrap": "^2.4.0",
       "react-dom": "^18.3.1",
+      "react-router-dom": "^6.23.0",
       "react-transition-group": "^4.4.2",
       "styled-components": "^6.1.9",
-      "tailwindcss": "^3.1.6"
+      "tailwindcss": "^3.1.6",
+      "jotai": "2.8.2",
+      "clipboard-polyfill": "4.1.0",
+      "clipboard-async": "1.2.0"
     },
     "devDependencies": {
       "@babel/cli": "^7.17.6",
@@ -86,7 +106,9 @@ npm manifest:
       "@types/expect-puppeteer": "^5.0.0",
       "@types/jest-environment-puppeteer": "^5.0.2",
       "@types/puppeteer": "^5.4.6",
-      "@types/react": "^18.0.14",
+      "@types/react": "^18.3.1",
+      "@types/react-dom": "^18.3.0",
+      "@types/react-router-dom": "^5.3.3",
       "autoprefixer": "10.4.5",
       "aws-sdk": "^2.1106.0",
       "babel-loader": "^8.2.5",

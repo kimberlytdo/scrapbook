@@ -12,9 +12,9 @@ import CurrentInspo from './CurrentInspo';
 import AllInspo from './AllInspo';
 
 function Inspirations() {
-  const [expanded, setExpanded] = useState([]);
+  const [expanded, setExpanded] = useState([true, true, true]);
 
-  const handleChange = (index) => {
+  const handleChange = (index: number) => {
     const newExpanded = [...expanded];
     newExpanded[index] = !newExpanded[index];
     setExpanded(newExpanded);
