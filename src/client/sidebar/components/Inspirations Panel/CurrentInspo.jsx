@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { atom, useAtom } from 'jotai';
-import { InspoHistoryAtom, currentInspoTextAtom } from './InspoData';
+import { InspoHistoryAtom, currentInspoTextAtom } from '../../data/InspoData';
 import EditableTextarea from './EditableTextarea';
 
 function CurrentInspo() {

@@ -8,7 +8,7 @@ import PickedInspiration from './PickedInspiration';
 
 function Remix() {
 
-  const [expanded, setExpanded] = useState([]);
+  const [expanded, setExpanded] = useState([true, true, true]);
 
   const handleChange = (index) => {
     const newExpanded = [...expanded];

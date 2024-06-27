@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { Theme } from './theme';
 import { Tabs, Tab, Box } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
 import Customize from './Customize Panel/Customize';
 import Remix from './Remix Panel/Remix';
 import History from './History Panel/History';
@@ -30,24 +32,34 @@ function Navbar() {
 
   return (
     <div>
-      <Tabs value={value} onChange={handleChange} variant="scrollable" scrollButtons="auto" scrolButtons allowScrollButtonsMobile aria-label="scrollable force tabs example">
-        <Tab label="Remix" />
-        <Tab label="Inspirations" />
-        <Tab label="History" />
-        <Tab label="Customize" />
-      </Tabs>
-      <TabPanel value={value} index={0}>
-        <Remix />
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <Inspirations/>
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        <History/>
-      </TabPanel>
-      <TabPanel value={value} index={3}>
-        <Customize/>
-      </TabPanel>
+      <ThemeProvider theme={Theme}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          variant="scrollable"
+          scrollButtons="auto"
+          scrolButtons
+          allowScrollButtonsMobile
+          aria-label="scrollable force tabs example"
+        >
+          <Tab label="Remix" />
+          <Tab label="Inspirations" />
+          <Tab label="History" />
+          <Tab label="Customize" />
+        </Tabs>
+        <TabPanel value={value} index={0}>
+          <Remix />
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <Inspirations />
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+          <History />
+        </TabPanel>
+        <TabPanel value={value} index={3}>
+          <Customize />
+        </TabPanel>
+      </ThemeProvider>
     </div>
   );
 }
