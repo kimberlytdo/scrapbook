@@ -10,10 +10,11 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import { BookmarkAdded } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { serverFunctions } from '../../../utils/serverFunctions';
 import { atom, useAtom } from 'jotai';
-import { InspoHistoryAtom, currentInspoTextAtom } from './InspoData';
+import { InspoHistoryAtom, currentInspoTextAtom } from '../../data/InspoData';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -53,6 +54,18 @@ export default function AllInspo() {
     }
   };
 
+  const handleBookmark = (page) => {
+    let newRecord = {
+      ...history[page - 1],
+      isBookmarked: !history[page - 1].isBookmarked,
+    };
+    setHistory((prev) => {
+      const newArray = [...prev];
+      newArray[page - 1] = newRecord;
+      return newArray;
+    });
+  };
+
   const getHistoryLength = () => {
     setPageLength(history.length);
   };
@@ -61,6 +74,18 @@ export default function AllInspo() {
     setHistory((prev) => prev.filter((item) => item !== text));
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const renderBookmark = () => {
+    if (history.length === 0) {
+      return <BookmarkBorderIcon />;
+    } else {
+      return history[currentPage - 1].isBookmarked ? (
+        <BookmarkAdded />
+      ) : (
+        <BookmarkBorderIcon />
+      );
     }
   };
 
@@ -89,8 +114,11 @@ export default function AllInspo() {
         </CardContent>
 
         <CardActions>
-          <IconButton aria-label="use inspiration">
-            <BookmarkBorderIcon />
+          <IconButton
+            aria-label="use inspiration"
+            onClick={() => handleBookmark(currentPage)}
+          >
+            {renderBookmark()}
           </IconButton>
           <IconButton aria-label="delete">
             <DeleteIcon
