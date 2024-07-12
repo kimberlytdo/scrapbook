@@ -8,7 +8,6 @@ function History() {
     direction={{ xs: 'column'}}
     spacing={{ xs: 5}}>
       <SavedRemix/>
-      <SavedRemix/>
     </Stack>
   )
 };

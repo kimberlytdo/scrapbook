@@ -7,11 +7,11 @@ import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { spacing } from '@mui/system';
+import { List, ListItemButton, ListItemIcon, ListItemText, Divider } from '@mui/material';
 import { ContentCopy } from '@mui/icons-material';
-import Divider from '@mui/material/Divider';
-
-
+import { useAtom } from 'jotai';
+import { historyAtom, outputAtom } from '../state'; // Import historyAtom and outputAtom from state.js
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -25,61 +25,51 @@ const ExpandMore = styled((props) => {
 }));
 
 export default function SavedRemix() {
+  const [history] = useAtom(historyAtom);
+  const [output] = useAtom(outputAtom);
 
-    const handleClick = () => {
-        console.info('You clicked the Chip.');
-    };
-    
-    const handleDelete = () => {
-        console.info('You clicked the delete icon.');
-    };
+  const handleCopy = (text) => {
+    navigator.clipboard.writeText(text);
+    console.log("Copied text:", text);
+  };
 
   return (
-    <Card>
-        <CardHeader 
-            title={<Typography variant="subtitle1" >Paraphrase</Typography>}
-            subheader={<Typography variant="caption" >May 1, 2024</Typography>}>
-        </CardHeader>
-        <Divider/>
-      <CardContent>
-        <Stack spacing={{ xs: 1, sm: 2 }} direction="row" useFlexGap flexWrap="wrap">
-        <Chip label="inspiration word" 
-                onClick={handleClick}
-                onDelete={handleDelete}/>
-        <Chip label="This is one sentence where I can type a lot if I really wanted to" 
-                onClick={handleClick}
-                onDelete={handleDelete}
+    <div>
+      {history.slice().reverse().map((item, index) => (
+        <Card key={index} sx={{ mb: '1rem' }}>
+          <CardHeader 
+            title={<Typography variant="subtitle1">{item.mode}</Typography>}
+            subheader={<Typography variant="caption">{new Date(item.date).toLocaleString()}</Typography>}
+          />
+          <Divider />
+          <CardContent>
+            <Stack spacing={{ xs: 1, sm: 2 }} direction="row" useFlexGap flexWrap="wrap">
+              <Chip
+                label={item.input}
+                onClick={() => handleCopy(item.input)}
                 sx={{
-                    height: 'auto',
-                    '& .MuiChip-label': {
+                  height: 'auto',
+                  '& .MuiChip-label': {
                     display: 'block',
                     whiteSpace: 'normal',
                     padding: '10px'
-                    },
-                }}/>
-        </Stack>
-        <List>
-        <ListItemButton>
-          <ListItemIcon>
-            <ContentCopy />
-          </ListItemIcon>
-          <ListItemText primary="AI Suggestion 1" />
-        </ListItemButton>
-        <ListItemButton>
-          <ListItemIcon>
-            <ContentCopy />
-          </ListItemIcon>
-          <ListItemText primary="AI Suggestion 2" />
-        </ListItemButton>
-        <ListItemButton>
-          <ListItemIcon>
-            <ContentCopy />
-          </ListItemIcon>
-          <ListItemText primary="AI Suggestion 3" />
-        </ListItemButton>
-      </List>
-      </CardContent>
-      
-    </Card>
+                  },
+                }}
+              />
+            </Stack>
+            <List>
+              {item.responses.map((response, responseIndex) => (
+                <ListItemButton key={responseIndex} onClick={() => handleCopy(response)}>
+                  <ListItemIcon>
+                    <ContentCopy />
+                  </ListItemIcon>
+                  <ListItemText primary={`AI Suggestion ${responseIndex + 1}`} secondary={response} />
+                </ListItemButton>
+              ))}
+            </List>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
   );
 }

@@ -14,7 +14,7 @@ export default function InspirationTypeCustom() {
         defaultValue="inspo-only"
         name="radio-buttons-group"
       >
-        <FormControlLabel value="inspo" control={<Radio />} label="Inspiration Only" />
+        <FormControlLabel value="inspo" control={<Radio />} label="Inspiration only" />
         <FormControlLabel value="inspo-sentence" control={<Radio />} label="Inspiration sentence" />
         <FormControlLabel value="inspo-and-sentences" control={<Radio />} label="Inspiration and surrounding sentences" />
         <FormControlLabel value="inspo-paragraph" control={<Radio />} label="Inspiration paragraph" />
