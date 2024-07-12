@@ -15,7 +15,7 @@ import {
 import CheckIcon from '@mui/icons-material/Check';
 import EditIcon from '@mui/icons-material/Edit';
 import { atom, useAtom } from 'jotai';
-import { InspoHistoryAtom, currentInspoTextAtom } from './InspoData';
+import { InspoHistoryAtom, currentInspoTextAtom } from '../../data/InspoData';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 export default function EditableTextarea({ record }) {

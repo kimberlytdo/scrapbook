@@ -5,7 +5,7 @@ import Stack from '@mui/material/Stack';
 import AddIcon from '@mui/icons-material/Add';
 import { serverFunctions } from '../../../utils/serverFunctions';
 import { atom, useAtom } from 'jotai';
-import { InspoHistoryAtom, currentInspoTextAtom, IDAtom } from './InspoData';
+import { InspoHistoryAtom, currentInspoTextAtom, IDAtom } from '../../data/InspoData';
 
 function AddInspo() {
   const [inspoText, setInspoText] = useAtom(currentInspoTextAtom);
@@ -26,6 +26,7 @@ function AddInspo() {
         id: ID,
         sourceDocumentName: 'test',
         content: inspoText,
+        isBookmarked: false,
       };
       setHistory([...history, newRecord]);
       setID(ID + 1);

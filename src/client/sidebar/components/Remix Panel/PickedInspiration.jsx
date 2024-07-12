@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -9,11 +9,48 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import { atom, useAtom } from 'jotai';
+import { InspoHistoryAtom, currentInspoTextAtom } from '../../data/InspoData';
 
 function PickedInspiration() {
+  const [history, setHistory] = useAtom(InspoHistoryAtom);
+
+  const [bookmarked, setBookmarked] = useState([]);
+  const [remixInspoPageLength, setRemixInspoPageLength] = useState(0);
+  const [remixInspoCurrentPage, setRemixInspoCurrentPage] = useState(1);
+
+  useEffect(() => {
+    getBookmarkedList();
+    setRemixInspoPageLength(bookmarked.length);
+  }, [history, bookmarked]);
+
+  const getBookmarkedList = () => {
+    let bookmarkedInspo = history
+      .map((item) => {
+        if (item.isBookmarked) {
+          return item;
+        } else {
+          return null;
+        }
+      })
+      .filter((item) => item !== null);
+    if (bookmarkedInspo.length > 0) {
+      setBookmarked(bookmarkedInspo);
+      // setRemixInspoPageLength(bookmarkedInspo.length);
+    }  
+  };
+
+  const retrieveBookmarked = (page) => {
+    if (bookmarked.length <= 0) {
+      return 'Please add content';
+    } else {
+      return bookmarked[page - 1].content;
+    }
+  };
+
   return (
-   <div>
-        <FormControl fullWidth>
+    <div>
+      {/* <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">Age</InputLabel>
             <Select
                 labelId="demo-simple-select-label"
@@ -24,10 +61,25 @@ function PickedInspiration() {
                 <MenuItem value={20}>Twenty</MenuItem>
                 <MenuItem value={30}>Thirty</MenuItem>
             </Select>
-        </FormControl>
-        <Box fontFamily={'Roboto'} height={100} sx={{overflowY: 'auto', padding: 2,}}>The history of ice cream traces back to ancient civilizations, where inventive minds experimented with combinations of snow, ice, and flavors. Millennia later, during the Renaissance, Italian chefs refined these concoctions into what we now recognize as gelato, the precursor to modern ice cream. As trade routes expanded and culinary techniques evolved, ice cream gradually became more accessible, spreading its delightful influence across continents.</Box>
-        <Pagination count={3} defaultPage={1} siblingCount={0} />
-   </div>
+        </FormControl> */}
+      <Box
+        fontFamily={'Roboto'}
+        height={100}
+        sx={{ overflowY: 'auto', padding: 2 }}
+      >
+        {retrieveBookmarked(remixInspoCurrentPage)}
+      </Box>
+      <Pagination
+        count={remixInspoPageLength}
+        page={remixInspoCurrentPage}
+        size={'small'}
+        onChange={(e, page) => {
+          setRemixInspoCurrentPage(page);
+        }}
+        siblingCount={0}
+        boundaryCount={0}
+      />
+    </div>
   );
 }
 
