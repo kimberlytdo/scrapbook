@@ -63,7 +63,7 @@ const fetchChatGPTResponse = async (inputText, mode, docInfo, numSuggestions) =>
   }, {
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': '',
+      'Authorization': 'Bearer ',
     },
   });
   return response.data.choices.map(choice => choice.message.content.trim());

@@ -4,19 +4,23 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import AddIcon from '@mui/icons-material/Add';
 import { serverFunctions } from '../../../utils/serverFunctions';
-import { atom, useAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import { InspoHistoryAtom, currentInspoTextAtom, IDAtom } from '../../data/InspoData';
+
+import axios from 'axios';
 
 function AddInspo() {
   const [inspoText, setInspoText] = useAtom(currentInspoTextAtom);
   const [history, setHistory] = useAtom(InspoHistoryAtom);
   const [ID, setID] = useAtom(IDAtom);
+  const [loading, setLoading] = useState(false);
 
   const addTextFromSelection = () => {
     let text = serverFunctions.copyInspiration();
-    // resolve promise
-    text.then(function (text) {
+    text.then((text) => {
       setInspoText(text);
+    }).catch((error) => {
+      console.error('Error copying inspiration:', error);
     });
   };
 
@@ -39,26 +43,58 @@ function AddInspo() {
   };
 
   const readClipboardContent = async () => {
-    // clipboard access is granted to the iframe wrapper
-    // when using this fuction, chrome will first ask for clipboard visit permission
-
-    // need to install clipboard-polyfill
-    // let text = await clipboard.readText();
-    navigator.clipboard
-      .readText()
-      .then((text) => {
-        setInspoText(text);
-      })
-      .catch((error) => {
-        console.error('Failed to read clipboard:', error);
-        // Handle the error, e.g. display an error message to the user
-      });
+    try {
+      const text = await navigator.clipboard.readText();
+      setInspoText(text);
+    } catch (error) {
+      console.error('Failed to read clipboard:', error);
+    }
   };
 
   const handleContentChange = (e) => {
     setInspoText(e.target.value);
   };
 
+  const fetchChatGPTResponse = async () => {
+    try {
+      const documentText = await serverFunctions.getDocumentText();
+      const prompt = `Extract one inspirational sentence from the following text:\n\n${documentText}`;
+      const response = await axios.post(
+        'https://api.openai.com/v1/chat/completions',
+        {
+          model: 'gpt-3.5-turbo',
+          messages: [{ role: 'user', content: prompt }],
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ',
+          },
+        }
+      );
+      return response.data.choices[0].message.content.trim();
+    } catch (error) {
+      console.error('Error fetching response from ChatGPT:', error);
+      return '';
+    }
+  };
+
+  const autoAddText = async () => {
+    console.log(serverFunctions);
+
+    setLoading(true);
+    try {
+      const documentText = await serverFunctions.getDocumentText();
+      const prompt = `Extract one inspirational sentence from the following text:\n\n${documentText}`;
+      const response = await fetchChatGPTResponse(prompt);
+      setInspoText(response);
+    } catch (error) {
+      console.error('Error auto-adding text:', error);
+    } finally {
+      setLoading(false);
+    }
+  };  
+  
   return (
     <div>
       <TextField
@@ -82,7 +118,9 @@ function AddInspo() {
         <Button variant="outlined" onClick={addTextFromSelection}>
           Paste from Selection
         </Button>
-        <Button variant="outlined">Auto-Add</Button>
+        <Button variant="outlined" onClick={autoAddText}>
+          Edit
+        </Button>
         <Button
           variant="contained"
           startIcon={<AddIcon />}

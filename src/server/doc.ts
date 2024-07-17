@@ -3,6 +3,12 @@ export const getDocumentName = () => {
   return name
 }
 
+export const getDocumentText = () => {
+  let doc = DocumentApp.getActiveDocument();
+  let body = doc.getBody();
+  let text = body.getText();
+  return text;
+}
 
 export const insertGeneratedText = (insertText: string) => {
   let cursor = DocumentApp.getActiveDocument().getCursor();
@@ -35,3 +41,4 @@ export const copyInspiration = () => {
     return ""
   }
 }
+

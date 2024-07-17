@@ -6,6 +6,7 @@ import {
 import {
   insertGeneratedText,
   copyInspiration,
+  getDocumentText,
   getDocumentName
 } from "./doc"
 
@@ -15,5 +16,6 @@ export {
   openSidebar,
   insertGeneratedText,
   copyInspiration,
-  getDocumentName
+  getDocumentName,
+  getDocumentText
 };
