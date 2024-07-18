@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
-import { inputAtom, outputAtom, historyAtom, docInfoAtom, numSuggestionsAtom, copyFirstSentenceAtom, pasteFirstSentenceAtom } from '../state';
+import { inputAtom, outputAtom, historyAtom, docInfoAtom, numSuggestionsAtom, copyFirstSentenceAtom, pasteFirstSentenceAtom, tagsInputAtom, BookmarkedAtom } from '../state';
 import axios from 'axios';
 import { Button } from '@mui/material';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import TextField from '@mui/material/TextField';
 import { serverFunctions } from '../../../utils/serverFunctions';
+import TagsInput from 'react-tagsinput';
+import 'react-tagsinput/react-tagsinput.css';
 
 const promptMap = {
   paraphrase: (inputText, docInfo) =>
@@ -85,17 +87,21 @@ function SentenceRemixer() {
   };
 
   const handleSubmit = async (e) => {
+    // Note! Note that now the inspos are in a list stored in tagsInputList
+    // Remember to upddate the function
     e.preventDefault();
     setLoading(true);
     try {
-      const responses = await fetchChatGPTResponse(input, alignment, docInfo, numSuggestions);
+      // Ruishi: Work around now is to simply concat the text
+      let concatenatedInput = tagsInputList.join(' ')
+      const responses = await fetchChatGPTResponse(concatenatedInput, alignment, docInfo, numSuggestions);
       setOutput(responses.slice(0, numSuggestions));
       setHistory((prev) => [
         ...prev,
         {
           mode: alignment,
           date: new Date(),
-          input,
+          input: tagsInputList,
           responses: responses.slice(0, numSuggestions),
         },
       ]);
@@ -112,6 +118,20 @@ function SentenceRemixer() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const [bookmarked, setBookmarked] = useAtom(BookmarkedAtom)
+
+  const concatBookmarkedContent = (bookmarked) => bookmarked.map(tag => tag.content)
+
+  useEffect(() => {
+    setTagsInputList(concatBookmarkedContent(bookmarked))
+  }, [bookmarked]);
+
+  const [tagsInputList, setTagsInputList] = useAtom(tagsInputAtom);
+
+  const addInspoTag = (tag) => { 
+    setTagsInputList(tag)
   };
 
   return (
@@ -131,7 +151,7 @@ function SentenceRemixer() {
         <ToggleButton value="Combine">Comb</ToggleButton>
       </ToggleButtonGroup>
 
-      <TextField
+      {/* <TextField
         id="filled-textarea"
         label="Add inspo to remix"
         placeholder="Placeholder"
@@ -141,7 +161,10 @@ function SentenceRemixer() {
         maxRows={10}
         value={input}
         onChange={(e) => setInput(e.target.value)}
-      />
+      /> */}
+
+
+      <TagsInput value={tagsInputList} onChange={(tag) => {addInspoTag(tag)}} />
 
       <Button variant="contained" onClick={handleSubmit} disabled={loading}>
         {loading ? 'Loading...' : 'Submit'}
