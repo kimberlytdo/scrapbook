@@ -5,10 +5,12 @@ import axios from 'axios';
 import { Button } from '@mui/material';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { serverFunctions } from '../../../utils/serverFunctions';
-import TagsInput from 'react-tagsinput';
-import 'react-tagsinput/react-tagsinput.css';
+import Chip from '@mui/material/Chip';
+import Box from '@mui/material/Box';
+import { styled } from '@mui/system';
+import { Height } from '@mui/icons-material';
 
 const promptMap = {
   paraphrase: (inputText, docInfo) =>
@@ -57,19 +59,53 @@ const fetchChatGPTResponse = async (inputText, mode, docInfo, numSuggestions) =>
       model: 'gpt-3.5-turbo',
       n: numSuggestions,
       messages: [
-      {
-        role: 'user',
-        content: prompt,
-      },
-    ],
-  }, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ',
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
     },
-  });
-  return response.data.choices.map(choice => choice.message.content.trim());
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer sk-proj-',
+      },
+    }
+  );
+  return response.data.choices.map((choice) => choice.message.content.trim());
 };
+
+const StyledAutocomplete = styled(Autocomplete)({
+  '& .MuiAutocomplete-inputRoot': {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+  },
+  '& .MuiChip-root': {
+    whiteSpace: 'normal',
+    wordBreak: 'break-word',
+    margin: '2px',
+  },
+  '& .MuiInputBase-root': {
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+  },
+});
+
+const MultilineChip = styled(Chip)({
+  whiteSpace: 'normal',
+  wordBreak: 'break-word',
+  maxWidth: 'auto',
+  margin: '4px',
+  height: 'auto',
+  padding: '3px',
+  '& .MuiChip-label': {
+    display: 'block',
+    wordBreak: 'break-word',
+    whiteSpace: 'normal',
+    padding: '5px',
+  },
+});
 
 function SentenceRemixer() {
   const [alignment, setAlignment] = useState('Paraphrase');
@@ -77,23 +113,24 @@ function SentenceRemixer() {
   const [, setOutput] = useAtom(outputAtom);
   const [docInfo] = useAtom(docInfoAtom);
   const [copyFirstSentence] = useAtom(copyFirstSentenceAtom);
-  const [pasteFirstSentence] =useAtom(pasteFirstSentenceAtom);
+  const [pasteFirstSentence] = useAtom(pasteFirstSentenceAtom);
   const [numSuggestions] = useAtom(numSuggestionsAtom);
   const [, setHistory] = useAtom(historyAtom);
   const [loading, setLoading] = useState(false);
+
+  const [inputValue, setInputValue] = useState('');
+  const [tagsInputList, setTagsInputList] = useAtom(tagsInputAtom);
+  const [bookmarked, setBookmarked] = useAtom(BookmarkedAtom);
 
   const handleChange = (event, newAlignment) => {
     setAlignment(newAlignment);
   };
 
   const handleSubmit = async (e) => {
-    // Note! Note that now the inspos are in a list stored in tagsInputList
-    // Remember to upddate the function
     e.preventDefault();
     setLoading(true);
     try {
-      // Ruishi: Work around now is to simply concat the text
-      let concatenatedInput = tagsInputList.join(' ')
+      let concatenatedInput = tagsInputList.join(' ');
       const responses = await fetchChatGPTResponse(concatenatedInput, alignment, docInfo, numSuggestions);
       setOutput(responses.slice(0, numSuggestions));
       setHistory((prev) => [
@@ -108,11 +145,6 @@ function SentenceRemixer() {
       if (copyFirstSentence && responses.length > 0) {
         navigator.clipboard.writeText(responses[0]);
       }
-      // if (pasteFirstSentence && responses.length > 0) {
-      //   // Call Google Apps Script function to insert first sentence at cursor position
-      //   console.log("test")
-      //   serverFunctions.insertGeneratedText(responses[0]);
-      // }
     } catch (error) {
       console.error('Error fetching response from ChatGPT', error);
     } finally {
@@ -120,19 +152,41 @@ function SentenceRemixer() {
     }
   };
 
-  const [bookmarked, setBookmarked] = useAtom(BookmarkedAtom)
-
-  const concatBookmarkedContent = (bookmarked) => bookmarked.map(tag => tag.content)
+  const concatBookmarkedContent = (bookmarked) => bookmarked.map((tag) => tag.content);
 
   useEffect(() => {
-    setTagsInputList(concatBookmarkedContent(bookmarked))
+    setTagsInputList(concatBookmarkedContent(bookmarked));
   }, [bookmarked]);
 
-  const [tagsInputList, setTagsInputList] = useAtom(tagsInputAtom);
-
-  const addInspoTag = (tag) => { 
-    setTagsInputList(tag)
+  const handleInputChange = (event, newInputValue) => {
+    setInputValue(newInputValue);
   };
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      if (inputValue.trim() !== '') {
+        setTagsInputList([...tagsInputList, inputValue.trim()]);
+        setInputValue('');
+      }
+    }
+  };
+
+  const handleDelete = (chipToDelete) => () => {
+    setTagsInputList((chips) => chips.filter((chip) => chip !== chipToDelete));
+  };
+
+  useEffect(() => {
+    const savedTags = localStorage.getItem('tagsInputList');
+    if (savedTags) {
+      setTagsInputList(JSON.parse(savedTags));
+    }
+  }, []);
+  
+  useEffect(() => {
+    localStorage.setItem('tagsInputList', JSON.stringify(tagsInputList));
+  }, [tagsInputList]);
+  
 
   return (
     <div>
@@ -151,20 +205,35 @@ function SentenceRemixer() {
         <ToggleButton value="Combine">Comb</ToggleButton>
       </ToggleButtonGroup>
 
-      {/* <TextField
-        id="filled-textarea"
-        label="Add inspo to remix"
-        placeholder="Placeholder"
-        multiline
-        variant="filled"
-        rows={5}
-        maxRows={10}
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      /> */}
-
-
-      <TagsInput value={tagsInputList} onChange={(tag) => {addInspoTag(tag)}} />
+      <StyledAutocomplete
+        multiple
+        freeSolo
+        inputValue={inputValue}
+        onInputChange={handleInputChange}
+        onKeyDown={handleKeyDown}
+        value={tagsInputList}
+        onChange={(event, newValue) => setTagsInputList(newValue)}
+        options={[]}
+        renderTags={(value, getTagProps) =>
+          value.map((option, index) => (
+            <MultilineChip
+              key={option}
+              label={option}
+              {...getTagProps({ index })}
+              onDelete={handleDelete(option)}
+            />
+          ))
+        }
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            variant="outlined"
+            placeholder="Enter text"
+            multiline
+            rows={1}
+          />
+        )}
+      />
 
       <Button variant="contained" onClick={handleSubmit} disabled={loading}>
         {loading ? 'Loading...' : 'Submit'}

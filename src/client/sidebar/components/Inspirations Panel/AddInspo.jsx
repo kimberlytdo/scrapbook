@@ -68,7 +68,7 @@ function AddInspo() {
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer ',
+            Authorization: 'Bearer sk-proj-COxppCT609y5gCuzv7dMT3BlbkFJOQ4TGj8ROYGs3Ct2SRUh',
           },
         }
       );
