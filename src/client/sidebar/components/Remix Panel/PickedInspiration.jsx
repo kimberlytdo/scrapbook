@@ -11,18 +11,18 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { atom, useAtom } from 'jotai';
 import { InspoHistoryAtom, currentInspoTextAtom } from '../../data/InspoData';
+import { BookmarkedAtom } from '../state';
 
 function PickedInspiration() {
   const [history, setHistory] = useAtom(InspoHistoryAtom);
-
-  const [bookmarked, setBookmarked] = useState([]);
+  const [bookmarked, setBookmarked] = useAtom(BookmarkedAtom);
   const [remixInspoPageLength, setRemixInspoPageLength] = useState(0);
   const [remixInspoCurrentPage, setRemixInspoCurrentPage] = useState(1);
 
   useEffect(() => {
     getBookmarkedList();
-    setRemixInspoPageLength(bookmarked.length);
-  }, [history, bookmarked]);
+    // setRemixInspoPageLength(bookmarked.length);
+  }, [history]);
 
   const getBookmarkedList = () => {
     let bookmarkedInspo = history
@@ -36,7 +36,7 @@ function PickedInspiration() {
       .filter((item) => item !== null);
     if (bookmarkedInspo.length > 0) {
       setBookmarked(bookmarkedInspo);
-      // setRemixInspoPageLength(bookmarkedInspo.length);
+      setRemixInspoPageLength(bookmarkedInspo.length);
     }  
   };
 

@@ -18,7 +18,15 @@ export const insertGeneratedText = (insertText: string) => {
       DocumentApp.getUi().alert('Cannot insert text here.');
     }
   } else {
-    DocumentApp.getUi().alert('Cannot find a cursor.');
+    let selection = DocumentApp.getActiveDocument().getSelection();
+    if (selection) {
+      let elements = selection.getRangeElements();
+      let offset = elements[elements.length - 1].getEndOffsetInclusive()
+      let element = elements[elements.length - 1].getElement().asText().insertText(offset + 1, insertText);
+    }
+    else {
+      DocumentApp.getUi().alert('Fail to insert test');
+    }
   }
 };
 
