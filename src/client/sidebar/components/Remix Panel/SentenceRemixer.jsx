@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
-import { inputAtom, outputAtom, historyAtom, docInfoAtom, numSuggestionsAtom, copyFirstSentenceAtom, pasteFirstSentenceAtom, tagsInputAtom, BookmarkedAtom } from '../state';
+import { outputAtom, historyAtom, docInfoAtom, numSuggestionsAtom, copyFirstSentenceAtom, pasteFirstSentenceAtom, tagsInputAtom, BookmarkedAtom } from '../state';
 import axios from 'axios';
 import { Button } from '@mui/material';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -14,41 +14,43 @@ import { Height } from '@mui/icons-material';
 
 const promptMap = {
   paraphrase: (inputText, docInfo) =>
-    `Please paraphrase the following text and use the following information to guide the paraphrasing:
+    `Please paraphrase the following text and use the following information to guide the paraphrasing. Only return a paraphrased sentence using the information below. Do not surround the output response in quotation marks.
     
-    Title: ${docInfo.title}
-    Audience: ${docInfo.audience}
-    Tone: ${docInfo.tone}
-    Style: ${docInfo.style}
+    Here is the document's intended title, which you can use to guide the subject of the sentence: ${docInfo.title}
+    Here is the document's intended audience, which you can use to guide the writing style of the sentence: ${docInfo.audience}
+    Here is the document's intended tone, which you can use to guide the tone of the sentence: ${docInfo.tone}
+    Here is the document's intended style, which you can use to guide the writing style of the sentence: ${docInfo.style}
     
-    Text: ${inputText}`,
+    Write a sentence that comprehensively paraphrases the main ideas included in the following: ${inputText}`,
   summarize: (inputText, docInfo) =>
-    `Please summarize the following text and use the following information to guide the summarization:
+    `Please summarize the following text and use the following information to guide the summarization. Only return a summarized sentence using the information below. Do not surround the output response in quotation marks.
     
-    Title: ${docInfo.title}
-    Audience: ${docInfo.audience}
-    Tone: ${docInfo.tone}
-    Style: ${docInfo.style}
+    Here is the document's intended title, which you can use to guide the subject of the sentence: ${docInfo.title}
+    Here is the document's intended audience, which you can use to guide the writing style of the sentence: ${docInfo.audience}
+    Here is the document's intended tone, which you can use to guide the tone of the sentence: ${docInfo.tone}
+    Here is the document's intended style, which you can use to guide the writing style of the sentence: ${docInfo.style}
     
-    Text: ${inputText}`,
+    Summarize the information below into a sentence that integrates the ideas included in the following: ${inputText}`
+    ,
   simplify: (inputText, docInfo) =>
-    `Please simplify the following text and use the following information to guide the simplification:
+    `Please simplify the following text and use the following information to guide the simplification. Only return a simplified sentence using the information below. Do not surround the output response in quotation marks.
     
-    Title: ${docInfo.title}
-    Audience: ${docInfo.audience}
-    Tone: ${docInfo.tone}
-    Style: ${docInfo.style}
+    Here is the document's intended title, which you can use to guide the subject of the sentence: ${docInfo.title}
+    Here is the document's intended audience, which you can use to guide the writing style of the sentence: ${docInfo.audience}
+    Here is the document's intended tone, which you can use to guide the tone of the sentence: ${docInfo.tone}
+    Here is the document's intended style, which you can use to guide the writing style of the sentence: ${docInfo.style}
     
-   Text: ${inputText}`,
+    Simplify the following information to create a concise sentence: ${inputText}`
+    ,
   combine: (inputText, docInfo) =>
-    `Please combine the following text and use the following information to guide the combination:
+    `Please combine the following text and use the following information to guide the combination. Only return a combined sentence using the information below. Do not surround the output response in quotation marks.
     
-    Title: ${docInfo.title}
-    Audience: ${docInfo.audience}
-    Tone: ${docInfo.tone}
-    Style: ${docInfo.style}
+    Here is the document's intended title, which you can use to guide the subject of the sentence: ${docInfo.title}
+    Here is the document's intended audience, which you can use to guide the writing style of the sentence: ${docInfo.audience}
+    Here is the document's intended tone, which you can use to guide the tone of the sentence: ${docInfo.tone}
+    Here is the document's intended style, which you can use to guide the writing style of the sentence: ${docInfo.style}
     
-    Text: ${inputText}`,
+    Combine the information below into a sentence that integrates the ideas included in the following: ${inputText}`,
 };
 
 const fetchChatGPTResponse = async (inputText, mode, docInfo, numSuggestions) => {
@@ -109,7 +111,6 @@ const MultilineChip = styled(Chip)({
 
 function SentenceRemixer() {
   const [alignment, setAlignment] = useState('Paraphrase');
-  const [input, setInput] = useAtom(inputAtom);
   const [, setOutput] = useAtom(outputAtom);
   const [docInfo] = useAtom(docInfoAtom);
   const [copyFirstSentence] = useAtom(copyFirstSentenceAtom);
@@ -230,13 +231,13 @@ function SentenceRemixer() {
             variant="outlined"
             placeholder="Enter text"
             multiline
-            rows={1}
+            rows={3}
           />
         )}
       />
 
-      <Button variant="contained" onClick={handleSubmit} disabled={loading}>
-        {loading ? 'Loading...' : 'Submit'}
+      <Button variant="contained" onClick={handleSubmit} disabled={loading} fullWidth="true">
+        {loading ? 'Loading...' : 'Remix It!'}
       </Button>
     </div>
   );

@@ -5,7 +5,8 @@ import { ThemeProvider } from '@mui/material/styles';
 import Customize from './Customize Panel/Customize';
 import Remix from './Remix Panel/Remix';
 import History from './History Panel/History';
-import Inspirations from './Inspirations Panel/Inspirations';
+import Inspirations from './DocInspo Panel/Inspirations';
+import WebInspirations from './WebInspo Panel/WebInspirations';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -43,7 +44,8 @@ function Navbar() {
           aria-label="scrollable force tabs example"
         >
           <Tab label="Remix" />
-          <Tab label="Inspirations" />
+          <Tab label="Doc Inspo" />
+          <Tab label="Web Inspo" />
           <Tab label="History" />
           <Tab label="Customize" />
         </Tabs>
@@ -54,9 +56,12 @@ function Navbar() {
           <Inspirations />
         </TabPanel>
         <TabPanel value={value} index={2}>
-          <History />
+          <WebInspirations />
         </TabPanel>
         <TabPanel value={value} index={3}>
+          <History />
+        </TabPanel>
+        <TabPanel value={value} index={4}>
           <Customize />
         </TabPanel>
       </ThemeProvider>

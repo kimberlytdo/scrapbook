@@ -18,10 +18,10 @@ function CurrentInspo() {
   const [inspoText, setInspoText] = useAtom(currentInspoTextAtom);
   const [history, setHistory] = useAtom(InspoHistoryAtom);
   return (
-    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', padding:'0' }}>
       {history.map((currentRecord) => {
         return (
-          <ListItem key={currentRecord.id}>
+          <ListItem key={currentRecord.id} fullWidth="true" width="100%" sx={{width: "100%"}}>
             <EditableTextarea record={currentRecord} />
             {/* <ListItemText>{historyText}</ListItemText> */}
           </ListItem>

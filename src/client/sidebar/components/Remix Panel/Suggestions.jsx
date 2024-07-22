@@ -20,7 +20,9 @@ function Suggestions() {
             <ListItemIcon>
               <ContentCopy />
             </ListItemIcon>
-            <ListItemText primary={`Sentence ${index + 1}`} secondary={sentence} />
+            {/* <ListItemText primary={`Sentence ${index + 1}`} secondary={sentence} /> */}
+            <ListItemText secondary={sentence} />
+
           </ListItemButton>
         ))}
       </List>

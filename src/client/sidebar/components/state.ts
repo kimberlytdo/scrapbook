@@ -1,9 +1,6 @@
 import { atom } from 'jotai';
 import { InspoRecord, SystemHistory } from '../data/types';
 
-
-
-export const inputAtom = atom('');
 export const outputAtom = atom([]);
 export const historyAtom = atom<SystemHistory[]>([]);
 export const docInfoAtom = atom({

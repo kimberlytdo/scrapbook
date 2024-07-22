@@ -11,7 +11,7 @@ import DocInfoCustom from './DocInfoCustom.jsx';
 const Customize = () => (
   
   <div>
-    <Stack spacing={4}>
+    <Stack spacing={8}>
       <Box>
         <Typography variant="h6">Sentence Remix Settings</Typography>
         <SentenceRemixCustom/>

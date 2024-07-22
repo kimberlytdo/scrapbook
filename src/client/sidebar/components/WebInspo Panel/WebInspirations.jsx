@@ -6,12 +6,11 @@ import {
   Typography,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import AddInspo from './AddInspo';
+import AddInspo from './WebAddInspo';
 import TextField from '@mui/material/TextField';
-import CurrentInspo from './CurrentInspo';
-import AllInspo from './AllInspo';
+import AllInspo from './WebAllInspo';
 
-function Inspirations() {
+function WebInspirations() {
   const [expanded, setExpanded] = useState([true, true, true]);
 
   const handleChange = (index) => {
@@ -28,23 +27,10 @@ function Inspirations() {
           aria-controls="panel-content1"
           id="panel-header1"
         >
-          <Typography>Add New Inspiration from Current Document</Typography>
+          <Typography>Add Inspiration from a Webpage</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <AddInspo />
-        </AccordionDetails>
-      </Accordion>
-
-      <Accordion expanded={expanded[1]} onChange={() => handleChange(1)}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel-content2"
-          id="panel-header2"
-        >
-          <Typography>Inspiration from Current Document</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <CurrentInspo />
         </AccordionDetails>
       </Accordion>
 
@@ -54,7 +40,7 @@ function Inspirations() {
           aria-controls="panel-content3"
           id="panel-header3"
         >
-          <Typography>All Inspiration</Typography>
+          <Typography>All Web Inspiration</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <AllInspo />
@@ -64,4 +50,4 @@ function Inspirations() {
   );
 }
 
-export default Inspirations;
+export default WebInspirations;

@@ -5,6 +5,14 @@ export interface InspoRecord {
   isBookmarked: boolean
 }
 
+export interface WebInspoRecord {
+  id: number,
+  url: string,
+  sourceDocumentName: string,
+  content: string,
+  isBookmarked: boolean
+}
+
 export interface SystemHistory {
   mode: 'Paraphrase' | 'Summarize' | 'Simplify' | 'Combine';
   date: Date;

@@ -2,14 +2,17 @@ import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
 import AddIcon from '@mui/icons-material/Add';
 import { serverFunctions } from '../../../utils/serverFunctions';
 import { useAtom } from 'jotai';
 import { InspoHistoryAtom, currentInspoTextAtom, IDAtom } from '../../data/InspoData';
+import Link from '@mui/icons-material/Link';
+
 
 import axios from 'axios';
 
-function AddInspo() {
+function WebAddInspo() {
   const [inspoText, setInspoText] = useAtom(currentInspoTextAtom);
   const [history, setHistory] = useAtom(InspoHistoryAtom);
   const [ID, setID] = useAtom(IDAtom);
@@ -58,7 +61,7 @@ function AddInspo() {
   const fetchChatGPTResponse = async () => {
     try {
       const documentText = await serverFunctions.getDocumentText();
-      const prompt = `Extract one inspirational sentence from the following text:\n\n${documentText}`;
+      const prompt = `Extract one inspirational sentence from the following text and do not surround it the sentence with quotation marks:\n\n${documentText}`;
       const response = await axios.post(
         'https://api.openai.com/v1/chat/completions',
         {
@@ -68,7 +71,7 @@ function AddInspo() {
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer sk-proj-',
+            Authorization: 'Bearer sk-proj-COxppCT609y5gCuzv7dMT3BlbkFJOQ4TGj8ROYGs3Ct2SRUh',
           },
         }
       );
@@ -85,8 +88,8 @@ function AddInspo() {
     setLoading(true);
     try {
       const documentText = await serverFunctions.getDocumentText();
-      const prompt = `Extract one inspirational sentence from the following text:\n\n${documentText}`;
-      const response = await fetchChatGPTResponse(prompt);
+      const prompt = `Extract one inspirational sentence from the following text and do not surround it the sentence with quotation marks:\n\n${documentText}`;
+      const response = await fetchChatGPTResponse();
       setInspoText(response);
     } catch (error) {
       console.error('Error auto-adding text:', error);
@@ -94,13 +97,17 @@ function AddInspo() {
       setLoading(false);
     }
   };  
-  
+
   return (
     <div>
+      <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+        {/* <Link sx={{ color: 'action.active', mr: 4, my: 7 }} /> */}
+        <TextField id="input-with-sx" label="Link to Web Inspiration" variant="filled" />
+      </Box>
       <TextField
         id="inspo-textarea"
-        label="Add inspo to remix"
-        placeholder="Placeholder"
+        label="Add New Inspiration (Optional)"
+        placeholder="Type some web inspiration to save for later"
         multiline
         variant="filled"
         rows={5}
@@ -115,11 +122,11 @@ function AddInspo() {
         <Button variant="outlined" onClick={readClipboardContent}>
           Paste from Clipboard
         </Button>
-        <Button variant="outlined" onClick={addTextFromSelection}>
+        {/* <Button variant="outlined" onClick={addTextFromSelection}>
           Paste from Selection
-        </Button>
+        </Button> */}
         <Button variant="outlined" onClick={autoAddText}>
-          Edit
+          Paste Inspiration for Me
         </Button>
         <Button
           variant="contained"
@@ -133,4 +140,4 @@ function AddInspo() {
   );
 }
 
-export default AddInspo;
+export default WebAddInspo;

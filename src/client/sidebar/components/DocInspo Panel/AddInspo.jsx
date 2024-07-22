@@ -5,60 +5,60 @@ import Stack from '@mui/material/Stack';
 import AddIcon from '@mui/icons-material/Add';
 import { serverFunctions } from '../../../utils/serverFunctions';
 import { useAtom } from 'jotai';
-import { InspoHistoryAtom, currentInspoTextAtom, IDAtom } from '../../data/InspoData';
+import { WebInspoHistoryAtom, currentWebInspoTextAtom, WebIDAtom } from '../../data/WebInspoData';
 
 import axios from 'axios';
 
 function AddInspo() {
-  const [inspoText, setInspoText] = useAtom(currentInspoTextAtom);
-  const [history, setHistory] = useAtom(InspoHistoryAtom);
-  const [ID, setID] = useAtom(IDAtom);
+  const [webInspoText, setWebInspoText] = useAtom(currentWebInspoTextAtom);
+  const [history, setHistory] = useAtom(WebInspoHistoryAtom);
+  const [ID, setID] = useAtom(WebIDAtom);
   const [loading, setLoading] = useState(false);
 
   const addTextFromSelection = () => {
     let text = serverFunctions.copyInspiration();
     text.then((text) => {
-      setInspoText(text);
+      setWebInspoText(text);
     }).catch((error) => {
       console.error('Error copying inspiration:', error);
     });
   };
 
   const addInspiration = () => {
-    if (inspoText !== '') {
+    if (webInspoText !== '') {
       let newRecord = {
         id: ID,
         sourceDocumentName: 'test',
-        content: inspoText,
+        content: webInspoText,
         isBookmarked: false,
       };
       setHistory([...history, newRecord]);
       setID(ID + 1);
-      setInspoText('');
+      setWebInspoText('');
     }
   };
 
   const clearInspiration = () => {
-    setInspoText('');
+    setWebInspoText('');
   };
 
   const readClipboardContent = async () => {
     try {
       const text = await navigator.clipboard.readText();
-      setInspoText(text);
+      setWebInspoText(text);
     } catch (error) {
       console.error('Failed to read clipboard:', error);
     }
   };
 
   const handleContentChange = (e) => {
-    setInspoText(e.target.value);
+    setWebInspoText(e.target.value);
   };
 
   const fetchChatGPTResponse = async () => {
     try {
       const documentText = await serverFunctions.getDocumentText();
-      const prompt = `Extract one inspirational sentence from the following text:\n\n${documentText}`;
+      const prompt = `Extract one inspirational sentence from the following text and do not surround it the sentence with quotation marks:\n\n${documentText}`;
       const response = await axios.post(
         'https://api.openai.com/v1/chat/completions',
         {
@@ -68,7 +68,7 @@ function AddInspo() {
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer sk-proj-',
+            Authorization: 'Bearer sk-proj-COxppCT609y5gCuzv7dMT3BlbkFJOQ4TGj8ROYGs3Ct2SRUh',
           },
         }
       );
@@ -85,9 +85,9 @@ function AddInspo() {
     setLoading(true);
     try {
       const documentText = await serverFunctions.getDocumentText();
-      const prompt = `Extract one inspirational sentence from the following text:\n\n${documentText}`;
-      const response = await fetchChatGPTResponse(prompt);
-      setInspoText(response);
+      const prompt = `Extract one inspirational sentence from the following text and do not surround it the sentence with quotation marks:\n\n${documentText}`;
+      const response = await fetchChatGPTResponse();
+      setWebInspoText(response);
     } catch (error) {
       console.error('Error auto-adding text:', error);
     } finally {
@@ -99,13 +99,13 @@ function AddInspo() {
     <div>
       <TextField
         id="inspo-textarea"
-        label="Add inspo to remix"
-        placeholder="Placeholder"
+        label="Add New Inspiration"
+        placeholder="Type some inspiration to save for later"
         multiline
         variant="filled"
         rows={5}
         maxRows={10}
-        value={inspoText}
+        value={webInspoText}
         onChange={(e) => handleContentChange(e)}
       />
       <Stack spacing={1} direction={'column-reverse'}>
@@ -119,7 +119,7 @@ function AddInspo() {
           Paste from Selection
         </Button>
         <Button variant="outlined" onClick={autoAddText}>
-          Edit
+          Paste Inspiration for Me
         </Button>
         <Button
           variant="contained"

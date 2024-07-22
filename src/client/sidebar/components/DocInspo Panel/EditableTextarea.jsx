@@ -17,6 +17,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { atom, useAtom } from 'jotai';
 import { InspoHistoryAtom, currentInspoTextAtom } from '../../data/InspoData';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { CenterFocusStrong } from '@mui/icons-material';
 
 export default function EditableTextarea({ record }) {
   const [isEditable, setIsEditable] = useState(false);
@@ -71,11 +72,14 @@ export default function EditableTextarea({ record }) {
 
   return (
     <div>
-      <Box sx={{ display: 'inline-flex' }}>
+      <Box sx={{ display: 'inline-flex', alignItems: 'center', width: '14rem', border: 'none'}}>
         <TextField
           disabled={!isEditable}
-          multiline
-          rows={1}
+          multiline="true"
+          minRows={2}
+          maxRows={5}
+          fullWidth='true'
+          width="100%"
           onChange={(e, currentRecord) => {
             let newContent = {
               ...currentRecord,
@@ -84,6 +88,20 @@ export default function EditableTextarea({ record }) {
             setcurrentRecord(newContent)
           }}
           value={currentRecord.content}
+          InputProps={{
+            disableUnderline: true,
+            sx: { border: 'none', outline: 'none', padding: '8px' },
+          }}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': {
+                border: isEditable ? '1px solid rgba(0, 0, 0, 0.23)' : 'none',
+              },
+            },
+            '& .MuiInputBase-input.Mui-disabled': {
+              WebkitTextFillColor: 'black', // Change text color for disabled input
+            },
+          }}
           // onSubmit={setIsEditable(false)}
         ></TextField>
         {isEditable ? (
