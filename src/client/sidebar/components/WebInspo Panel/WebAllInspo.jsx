@@ -15,7 +15,10 @@ import { BookmarkAdded } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { serverFunctions } from '../../../utils/serverFunctions';
 import { atom, useAtom } from 'jotai';
-import { WebInspoHistoryAtom, currentWebInspoTextAtom } from '../../data/WebInspoData';
+import {
+  WebInspoHistoryAtom,
+  currentWebInspoTextAtom,
+} from '../../data/WebInspoData';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -92,13 +95,17 @@ export default function WebAllInspo() {
 
   return (
     <>
-    <Autocomplete
-            id="disable-close-on-select"
-            disableCloseOnSelect
-            renderInput={(params) => (
-              <TextField {...params} label="Select Web Inspiration(s)" variant="standard" />
-            )}
+      <Autocomplete
+        id="disable-close-on-select"
+        disableCloseOnSelect
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Select Web Inspiration(s)"
+            variant="standard"
           />
+        )}
+      />
       <Card sx={{ maxWidth: 345 }}>
         {/* <CardHeader
           subheader={

@@ -2,57 +2,60 @@ import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
 import AddIcon from '@mui/icons-material/Add';
 import { serverFunctions } from '../../../utils/serverFunctions';
 import { useAtom } from 'jotai';
-import { WebInspoHistoryAtom, currentWebInspoTextAtom, WebIDAtom } from '../../data/WebInspoData';
+import { InspoHistoryAtom, currentInspoTextAtom, IDAtom } from '../../data/InspoData';
+import Link from '@mui/icons-material/Link';
+
 
 import axios from 'axios';
 
-function AddInspo() {
-  const [webInspoText, setWebInspoText] = useAtom(currentWebInspoTextAtom);
-  const [history, setHistory] = useAtom(WebInspoHistoryAtom);
-  const [ID, setID] = useAtom(WebIDAtom);
+function WebAddInspo() {
+  const [inspoText, setInspoText] = useAtom(currentInspoTextAtom);
+  const [history, setHistory] = useAtom(InspoHistoryAtom);
+  const [ID, setID] = useAtom(IDAtom);
   const [loading, setLoading] = useState(false);
 
   const addTextFromSelection = () => {
     let text = serverFunctions.copyInspiration();
     text.then((text) => {
-      setWebInspoText(text);
+      setInspoText(text);
     }).catch((error) => {
       console.error('Error copying inspiration:', error);
     });
   };
 
   const addInspiration = () => {
-    if (webInspoText !== '') {
+    if (inspoText !== '') {
       let newRecord = {
         id: ID,
         sourceDocumentName: 'test',
-        content: webInspoText,
+        content: inspoText,
         isBookmarked: false,
       };
       setHistory([...history, newRecord]);
       setID(ID + 1);
-      setWebInspoText('');
+      setInspoText('');
     }
   };
 
   const clearInspiration = () => {
-    setWebInspoText('');
+    setInspoText('');
   };
 
   const readClipboardContent = async () => {
     try {
       const text = await navigator.clipboard.readText();
-      setWebInspoText(text);
+      setInspoText(text);
     } catch (error) {
       console.error('Failed to read clipboard:', error);
     }
   };
 
   const handleContentChange = (e) => {
-    setWebInspoText(e.target.value);
+    setInspoText(e.target.value);
   };
 
   const fetchChatGPTResponse = async () => {
@@ -87,14 +90,14 @@ function AddInspo() {
       const documentText = await serverFunctions.getDocumentText();
       const prompt = `Extract one inspirational sentence from the following text and do not surround it the sentence with quotation marks:\n\n${documentText}`;
       const response = await fetchChatGPTResponse();
-      setWebInspoText(response);
+      setInspoText(response);
     } catch (error) {
       console.error('Error auto-adding text:', error);
     } finally {
       setLoading(false);
     }
   };  
-  
+
   return (
     <div>
       <TextField
@@ -105,7 +108,7 @@ function AddInspo() {
         variant="filled"
         rows={5}
         maxRows={10}
-        value={webInspoText}
+        value={inspoText}
         onChange={(e) => handleContentChange(e)}
       />
       <Stack spacing={1} direction={'column-reverse'}>
@@ -133,4 +136,4 @@ function AddInspo() {
   );
 }
 
-export default AddInspo;
+export default WebAddInspo;
