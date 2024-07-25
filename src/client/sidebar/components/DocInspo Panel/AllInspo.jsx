@@ -50,7 +50,7 @@ export default function AllInspo() {
     if (history.length <= 0) {
       return 'Please add content';
     } else {
-      return history[page - 1].content;
+      return history[page - 1];
     }
   };
 
@@ -107,9 +107,12 @@ export default function AllInspo() {
           }
         />
         <CardContent>
-          <Typography variant="body1">{currentfileName}</Typography>
+          <Typography variant="body1">
+            {/* {currentfileName} */}
+            {retrieveHistory(currentPage).sourceDocumentName}
+          </Typography>
           <Typography variant="body2" color="text.secondary">
-            {retrieveHistory(currentPage)}
+            {retrieveHistory(currentPage).content}
           </Typography>
         </CardContent>
 

@@ -155,9 +155,9 @@ function SentenceRemixer() {
 
   const concatBookmarkedContent = (bookmarked) => bookmarked.map((tag) => tag.content);
 
-  useEffect(() => {
-    setTagsInputList(concatBookmarkedContent(bookmarked));
-  }, [bookmarked]);
+  // useEffect(() => {
+  //   setTagsInputList(concatBookmarkedContent(bookmarked));
+  // }, [bookmarked]);
 
   const handleInputChange = (event, newInputValue) => {
     setInputValue(newInputValue);
@@ -177,16 +177,16 @@ function SentenceRemixer() {
     setTagsInputList((chips) => chips.filter((chip) => chip !== chipToDelete));
   };
 
-  useEffect(() => {
-    const savedTags = localStorage.getItem('tagsInputList');
-    if (savedTags) {
-      setTagsInputList(JSON.parse(savedTags));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const savedTags = localStorage.getItem('tagsInputList');
+  //   if (savedTags) {
+  //     setTagsInputList(JSON.parse(savedTags));
+  //   }
+  // }, []);
   
-  useEffect(() => {
-    localStorage.setItem('tagsInputList', JSON.stringify(tagsInputList));
-  }, [tagsInputList]);
+  // useEffect(() => {
+  //   localStorage.setItem('tagsInputList', JSON.stringify(tagsInputList));
+  // }, [tagsInputList]);
   
 
   return (

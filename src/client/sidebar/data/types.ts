@@ -5,12 +5,8 @@ export interface InspoRecord {
   isBookmarked: boolean
 }
 
-export interface WebInspoRecord {
-  id: number,
-  url: string,
-  sourceDocumentName: string,
-  content: string,
-  isBookmarked: boolean
+export interface WebInspoRecord extends InspoRecord {
+  url: string
 }
 
 export interface SystemHistory {
