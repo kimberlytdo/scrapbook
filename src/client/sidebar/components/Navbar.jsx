@@ -6,7 +6,6 @@ import Customize from './Customize Panel/Customize';
 import Remix from './Remix Panel/Remix';
 import History from './History Panel/History';
 import Inspirations from './DocInspo Panel/Inspirations';
-import WebInspirations from './WebInspo Panel/WebInspirations';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -45,7 +44,6 @@ function Navbar() {
         >
           <Tab label="Remix" />
           <Tab label="Doc Inspo" />
-          <Tab label="Web Inspo" />
           <Tab label="History" />
           <Tab label="Customize" />
         </Tabs>
@@ -56,12 +54,9 @@ function Navbar() {
           <Inspirations />
         </TabPanel>
         <TabPanel value={value} index={2}>
-          <WebInspirations />
-        </TabPanel>
-        <TabPanel value={value} index={3}>
           <History />
         </TabPanel>
-        <TabPanel value={value} index={4}>
+        <TabPanel value={value} index={3}>
           <Customize />
         </TabPanel>
       </ThemeProvider>

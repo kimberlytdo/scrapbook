@@ -97,7 +97,7 @@ export default function AllInspo() {
             <Pagination
               count={pageLength}
               page={currentPage}
-              size={'small'}
+              size={'medium'}
               onChange={(e, page) => {
                 setCurrentPage(page);
               }}

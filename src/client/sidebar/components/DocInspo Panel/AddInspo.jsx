@@ -7,16 +7,23 @@ import AddIcon from '@mui/icons-material/Add';
 import { serverFunctions } from '../../../utils/serverFunctions';
 import { useAtom } from 'jotai';
 import { InspoHistoryAtom, currentInspoTextAtom, IDAtom } from '../../data/InspoData';
-import Link from '@mui/icons-material/Link';
-
-
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import { WebHistoryAtom } from '../../data/InspoData';
 import axios from 'axios';
 
 function WebAddInspo() {
   const [inspoText, setInspoText] = useAtom(currentInspoTextAtom);
+  const [urlText, setUrlText] = useAtom(WebHistoryAtom);
   const [history, setHistory] = useAtom(InspoHistoryAtom);
   const [ID, setID] = useAtom(IDAtom);
   const [loading, setLoading] = useState(false);
+  const [selectedSource, setSelectedSource] = useState('document');
+  const [title, setTitle] = useState('');
+  const [url, setUrl] = useState(''); // State for the "Webpage Inspiration URL" text field
 
   const addTextFromSelection = () => {
     let text = serverFunctions.copyInspiration();
@@ -31,13 +38,33 @@ function WebAddInspo() {
     if (inspoText !== '') {
       let newRecord = {
         id: ID,
-        sourceDocumentName: 'test',
+        sourceDocumentName: title,
         content: inspoText,
         isBookmarked: false,
       };
       setHistory([...history, newRecord]);
       setID(ID + 1);
       setInspoText('');
+      setTitle('');
+    }
+  };
+
+  const addWebInspiration = () => {
+    if (inspoText !== '') {
+      let newRecord = {
+        id: ID,
+        sourceDocumentName: title,
+        content: inspoText,
+        isBookmarked: false,
+        url: url, // Add the URL to the record
+      };
+      setHistory([...history, newRecord]);
+      setUrlText([...urlText, newRecord]);
+      console.log(urlText);
+      setID(ID + 1);
+      setInspoText('');
+      setTitle('');
+      setUrl(''); // Clear the URL field after adding the inspiration
     }
   };
 
@@ -58,10 +85,16 @@ function WebAddInspo() {
     setInspoText(e.target.value);
   };
 
-  const fetchChatGPTResponse = async () => {
+  const handleTitleChange = (e) => {
+    setTitle(e.target.value);
+  };
+
+  const handleUrlChange = (e) => {
+    setUrl(e.target.value);
+  };
+
+  const fetchChatGPTResponse = async (prompt) => {
     try {
-      const documentText = await serverFunctions.getDocumentText();
-      const prompt = `Extract one inspirational sentence from the following text and do not surround it the sentence with quotation marks:\n\n${documentText}`;
       const response = await axios.post(
         'https://api.openai.com/v1/chat/completions',
         {
@@ -71,7 +104,7 @@ function WebAddInspo() {
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer sk-proj-COxppCT609y5gCuzv7dMT3BlbkFJOQ4TGj8ROYGs3Ct2SRUh',
+            Authorization: 'Bearer sk-proj-',
           },
         }
       );
@@ -82,24 +115,81 @@ function WebAddInspo() {
     }
   };
 
+  const fetchWebpageContent = async (url) => {
+    try {
+      const response = await fetch(`https://r.jina.ai/${url}`, {
+        method: 'GET',
+        headers: {
+          "Authorization": "Bearer ",
+          "Accept": "application/json"
+        },
+      });
+      const data = await response.json();
+      return data.text; // Adjust this based on the actual response structure
+    } catch (error) {
+      console.error('Error fetching webpage content:', error);
+      return '';
+    }
+  };
+
   const autoAddText = async () => {
     console.log(serverFunctions);
 
     setLoading(true);
     try {
-      const documentText = await serverFunctions.getDocumentText();
-      const prompt = `Extract one inspirational sentence from the following text and do not surround it the sentence with quotation marks:\n\n${documentText}`;
-      const response = await fetchChatGPTResponse();
+      let documentText;
+      if (selectedSource === 'webpage') {
+        documentText = await fetchWebpageContent(url);
+      } else {
+        documentText = await serverFunctions.getDocumentText();
+        
+      }
+      const prompt = `Find and return exactly. one sentence from the given text that would be particularly inspiring. Extract one inspirational sentence from the following text and do not surround it the sentence with quotation marks:\n\n${documentText}`;
+      const response = await fetchChatGPTResponse(prompt);
       setInspoText(response);
     } catch (error) {
       console.error('Error auto-adding text:', error);
     } finally {
       setLoading(false);
     }
-  };  
+  };
+
+  const handleSourceChange = (event) => {
+    setSelectedSource(event.target.value);
+  };
 
   return (
     <div>
+     <FormControl component="fieldset">
+        <FormLabel component="legend">Inspiration Source Type</FormLabel>
+        <RadioGroup
+          row
+          aria-label="source"
+          name="source"
+          value={selectedSource}
+          onChange={handleSourceChange}
+        >
+          <FormControlLabel value="document" control={<Radio />} label="Document" />
+          <FormControlLabel value="webpage" control={<Radio />} label="Webpage" />
+        </RadioGroup>
+      </FormControl>
+      <TextField
+        id="inspo-title"
+        label="Inspiration Title (Optional)"
+        variant="filled"
+        value={title}
+        onChange={handleTitleChange}
+      />
+      {selectedSource === 'webpage' && (
+        <TextField
+          id="inspo-url"
+          label="Webpage Inspiration URL"
+          variant="filled"
+          value={url}
+          onChange={handleUrlChange} // Handle URL change
+          fullWidth
+        />
+      )}
       <TextField
         id="inspo-textarea"
         label="Add New Inspiration"
@@ -127,7 +217,7 @@ function WebAddInspo() {
         <Button
           variant="contained"
           startIcon={<AddIcon />}
-          onClick={addInspiration}
+          onClick={selectedSource === 'webpage' ? addWebInspiration : addInspiration}
         >
           Add Inspiration
         </Button>
@@ -135,5 +225,6 @@ function WebAddInspo() {
     </div>
   );
 }
+
 
 export default WebAddInspo;

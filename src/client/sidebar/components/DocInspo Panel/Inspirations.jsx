@@ -12,7 +12,7 @@ import CurrentInspo from './CurrentInspo';
 import AllInspo from './AllInspo';
 
 function Inspirations() {
-  const [expanded, setExpanded] = useState([true, true, true]);
+  const [expanded, setExpanded] = useState([true, true, true, true]);
 
   const handleChange = (index) => {
     const newExpanded = [...expanded];
@@ -28,38 +28,53 @@ function Inspirations() {
           aria-controls="panel-content1"
           id="panel-header1"
         >
-          <Typography>Add Inspiration from Current Document</Typography>
+          <Typography>Add Inspiration</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <AddInspo />
         </AccordionDetails>
       </Accordion>
 
+
       <Accordion expanded={expanded[1]} onChange={() => handleChange(1)}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel-content2"
-          id="panel-header2"
+          aria-controls="panel-content3"
+          id="panel-header3"
         >
-          <Typography>Inspiration from Current Document</Typography>
+          <Typography>Bookmark Inspiration</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <CurrentInspo />
+          <AllInspo />
         </AccordionDetails>
       </Accordion>
 
       <Accordion expanded={expanded[2]} onChange={() => handleChange(2)}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel-content3"
-          id="panel-header3"
+          aria-controls="panel-content2"
+          id="panel-header2"
         >
           <Typography>All Inspiration</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <AllInspo />
+          <CurrentInspo />
         </AccordionDetails>
       </Accordion>
+
+      {/* <Accordion expanded={expanded[2]} onChange={() => handleChange(2)}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel-content2"
+          id="panel-header2"
+        >
+          <Typography>Web Inspiration</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <CurrentInspo />
+        </AccordionDetails>
+      </Accordion> */}
+
     </div>
   );
 }
