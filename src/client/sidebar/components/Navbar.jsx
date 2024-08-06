@@ -43,7 +43,7 @@ function Navbar() {
           aria-label="scrollable force tabs example"
         >
           <Tab label="Remix" />
-          <Tab label="Doc Inspo" />
+          <Tab label="Inspo" />
           <Tab label="History" />
           <Tab label="Customize" />
         </Tabs>

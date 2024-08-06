@@ -104,7 +104,7 @@ function WebAddInspo() {
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer sk-proj-',
+            'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
           },
         }
       );
@@ -120,21 +120,24 @@ function WebAddInspo() {
       const response = await fetch(`https://r.jina.ai/${url}`, {
         method: 'GET',
         headers: {
-          "Authorization": "Bearer ",
-          "Accept": "application/json"
+          "Authorization": `Bearer ${process.env.JINA_AI_API_KEY}`,
+          "X-With-Links-Summary": "true",
+          "X-Return-Format": "text",
         },
       });
-      const data = await response.json();
-      return data.text; // Adjust this based on the actual response structure
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.text();
+      return data;
     } catch (error) {
-      console.error('Error fetching webpage content:', error);
-      return '';
+      return error;
     }
-  };
+  };  
 
   const autoAddText = async () => {
     console.log(serverFunctions);
-
+  
     setLoading(true);
     try {
       let documentText;
@@ -142,17 +145,18 @@ function WebAddInspo() {
         documentText = await fetchWebpageContent(url);
       } else {
         documentText = await serverFunctions.getDocumentText();
-        
       }
-      const prompt = `Find and return exactly. one sentence from the given text that would be particularly inspiring. Extract one inspirational sentence from the following text and do not surround it the sentence with quotation marks:\n\n${documentText}`;
+      const prompt = `Return an inspirational sentence that offers an original insight or ideas following text:\n\n${documentText}. The sentence should be in verbatim. Do not alter anything from the original source document. Provide an exact quote from the provided text. Do not surround the quote in quotation marks. If there is no text, say "Please try again".`;
       const response = await fetchChatGPTResponse(prompt);
       setInspoText(response);
     } catch (error) {
       console.error('Error auto-adding text:', error);
+      setInspoText("ERROR");
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleSourceChange = (event) => {
     setSelectedSource(event.target.value);

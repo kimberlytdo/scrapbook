@@ -1,20 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
-import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
+import Box from '@mui/material/Box';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Pagination from '@mui/material/Pagination';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-
+import IconButton from '@mui/material/IconButton';
+import Pagination from '@mui/material/Pagination';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
-import { BookmarkAdded } from '@mui/icons-material';
+import ShuffleIcon from '@mui/icons-material/Shuffle';
+import BookmarkAdded from '@mui/icons-material/BookmarkAdded';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import LinkIcon from '@mui/icons-material/Link'; // New icon import for URL
 import { serverFunctions } from '../../../utils/serverFunctions';
-import { atom, useAtom } from 'jotai';
-import { InspoHistoryAtom, currentInspoTextAtom } from '../../data/InspoData';
+import { useAtom } from 'jotai';
+import { InspoHistoryAtom } from '../../data/InspoData';
+import { outputAtom, historyAtom, docInfoAtom, numSuggestionsAtom, copyFirstSentenceAtom, pasteFirstSentenceAtom, tagsInputAtom, BookmarkedAtom } from '../state';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -28,16 +34,15 @@ const ExpandMore = styled((props) => {
 }));
 
 export default function AllInspo() {
-  const [currentfileName, setCurrentFileName] = useState('');
+  const [currentFileName, setCurrentFileName] = useState('');
   const [history, setHistory] = useAtom(InspoHistoryAtom);
-  const [pageLength, setPageLength] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
 
   useEffect(() => {
-    if (currentfileName === '') {
+    if (currentFileName === '') {
       cacheCurrentFileName();
     }
-    getHistoryLength();
   }, [history]);
 
   const cacheCurrentFileName = () => {
@@ -46,90 +51,94 @@ export default function AllInspo() {
     });
   };
 
-  const retrieveHistory = (page) => {
-    if (history.length <= 0) {
-      return 'Please add content';
-    } else {
-      return history[page - 1];
-    }
-  };
-
-  const handleBookmark = (page) => {
+  const handleBookmark = (index) => {
     let newRecord = {
-      ...history[page - 1],
-      isBookmarked: !history[page - 1].isBookmarked,
+      ...history[index],
+      isBookmarked: !history[index].isBookmarked,
     };
     setHistory((prev) => {
       const newArray = [...prev];
-      newArray[page - 1] = newRecord;
+      newArray[index] = newRecord;
       return newArray;
     });
   };
 
-  const getHistoryLength = () => {
-    setPageLength(history.length);
+  const handleDelete = (index) => {
+    setHistory((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleDelete = (text) => {
-    setHistory((prev) => prev.filter((item) => item !== text));
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
+  const handleCopy = (text) => {
+    navigator.clipboard.writeText(text);
+    console.log("Copied text:", text);
   };
 
-  const renderBookmark = () => {
-    if (history.length === 0) {
-      return <BookmarkBorderIcon />;
-    } else {
-      return history[currentPage - 1].isBookmarked ? (
-        <BookmarkAdded />
-      ) : (
-        <BookmarkBorderIcon />
-      );
-    }
+  const renderBookmark = (index) => {
+    return history[index].isBookmarked ? <BookmarkAdded /> : <BookmarkBorderIcon />;
   };
+
+  const handleRemix = (text) => {
+    setTagsInputList((prev) => [...prev, text]); // Save text to tagsInputAtom
+    console.log("Sent to remixer text:", text);
+  };
+
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+  };
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedHistory = history.slice(startIndex, startIndex + itemsPerPage);
+  const pageCount = Math.ceil(history.length / itemsPerPage);
+
+  const [inputValue, setInputValue] = useState('');
+  const [tagsInputList, setTagsInputList] = useAtom(tagsInputAtom);
 
   return (
     <>
-      <Card sx={{ maxWidth: 345 }}>
-        <CardHeader
-          subheader={
+      {history.length === 0 ? (
+        <Typography variant="h6">Please add content</Typography>
+      ) : (
+        <>
+          {paginatedHistory.map((item, index) => (
+            <Card key={startIndex + index} sx={{ maxWidth: 345, marginBottom: 2, padding: 4 }}>
+              <CardContent>
+                <Typography variant="body1">{item.sourceDocumentName}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {item.content}
+                </Typography>
+              </CardContent>
+              <IconButton aria-label="use inspiration" onClick={() => handleBookmark(startIndex + index)}>
+                {renderBookmark(startIndex + index)}
+              </IconButton>
+              <IconButton aria-label="copy" onClick={() => handleCopy(item.content)}>
+                <ContentCopyIcon />
+              </IconButton>
+              <IconButton aria-label="remix" onClick={() => handleRemix(item.content)}>
+                <ShuffleIcon />
+              </IconButton>
+              {item.url && (
+                <IconButton
+                  aria-label="open link"
+                  onClick={() => window.open(item.url, '_blank')}
+                >
+                  <LinkIcon />
+                </IconButton>
+              )}
+              <IconButton aria-label="delete" onClick={() => handleDelete(startIndex + index)}>
+                <DeleteIcon />
+              </IconButton>
+            </Card>
+          ))}
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
             <Pagination
-              count={pageLength}
+              count={pageCount}
               page={currentPage}
-              size={'medium'}
-              onChange={(e, page) => {
-                setCurrentPage(page);
-              }}
+              onChange={handlePageChange}
               siblingCount={0}
               boundaryCount={0}
             />
-          }
-        />
-        <CardContent>
-          <Typography variant="body1">
-            {/* {currentfileName} */}
-            {retrieveHistory(currentPage).sourceDocumentName}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {retrieveHistory(currentPage).content}
-          </Typography>
-        </CardContent>
-
-        <CardActions>
-          <IconButton
-            aria-label="use inspiration"
-            onClick={() => handleBookmark(currentPage)}
-          >
-            {renderBookmark()}
-          </IconButton>
-          <IconButton aria-label="delete">
-            <DeleteIcon
-              onClick={() => handleDelete(history[currentPage - 1])}
-            />
-          </IconButton>
-        </CardActions>
-      </Card>
+          </Box>
+        </>
+      )}
     </>
   );
 }

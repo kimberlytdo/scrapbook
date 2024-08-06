@@ -7,6 +7,7 @@ import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import InspirationTypeCustom from './InspirationTypeCustom';
 import DocInfoCustom from './DocInfoCustom.jsx';
+import SentenceNum from './SentenceNum.jsx';
 
 const Customize = () => (
   
@@ -21,10 +22,14 @@ const Customize = () => (
         <NumSuggestions/>
       </Box>
       <Box>
+        <Typography variant="h6">Suggestions Length</Typography>
+        <SentenceNum/>
+      </Box>
+      {/* <Box>
         <Typography variant="h6">Inspiration Presentation</Typography>
         <Typography variant="caption">Select how much text should accompany bookmarked inspiration</Typography>
         <InspirationTypeCustom/>
-      </Box>
+      </Box> */}
       <Box>
         <Typography variant="h6">Document Information (Optional)</Typography>
         <Typography variant="caption">Specify your document type, audience, writing style, and writing tone to customize AI suggestions</Typography>

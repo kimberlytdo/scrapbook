@@ -10,6 +10,7 @@ import AddInspo from './AddInspo';
 import TextField from '@mui/material/TextField';
 import CurrentInspo from './CurrentInspo';
 import AllInspo from './AllInspo';
+import WebTemplate from './WebTemplate';
 
 function Inspirations() {
   const [expanded, setExpanded] = useState([true, true, true, true]);
@@ -48,8 +49,21 @@ function Inspirations() {
           <AllInspo />
         </AccordionDetails>
       </Accordion>
+      
+      {/* <Accordion expanded={expanded[2]} onChange={() => handleChange(2)}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel-content2"
+          id="panel-header2"
+        >
+          <Typography>Webpage Templating</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <WebTemplate />
+        </AccordionDetails>
+      </Accordion> */}
 
-      <Accordion expanded={expanded[2]} onChange={() => handleChange(2)}>
+      {/* <Accordion expanded={expanded[2]} onChange={() => handleChange(2)}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel-content2"
@@ -60,7 +74,7 @@ function Inspirations() {
         <AccordionDetails>
           <CurrentInspo />
         </AccordionDetails>
-      </Accordion>
+      </Accordion> */}
 
       {/* <Accordion expanded={expanded[2]} onChange={() => handleChange(2)}>
         <AccordionSummary

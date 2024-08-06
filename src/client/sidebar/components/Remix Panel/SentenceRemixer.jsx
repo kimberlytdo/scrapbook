@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
-import { outputAtom, historyAtom, docInfoAtom, numSuggestionsAtom, copyFirstSentenceAtom, pasteFirstSentenceAtom, tagsInputAtom, BookmarkedAtom } from '../state';
+import { outputAtom, historyAtom, docInfoAtom, numSuggestionsAtom, copyFirstSentenceAtom, pasteFirstSentenceAtom, tagsInputAtom, BookmarkedAtom, sentenceNumAtom } from '../state';
 import axios from 'axios';
 import { Button } from '@mui/material';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -13,48 +13,51 @@ import { styled } from '@mui/system';
 import { Height } from '@mui/icons-material';
 
 const promptMap = {
-  paraphrase: (inputText, docInfo) =>
-    `Please paraphrase the following text and use the following information to guide the paraphrasing. Only return a paraphrased sentence using the information below. Do not surround the output response in quotation marks.
+  
+  paraphrase: (inputText, docInfo, sentenceNum) =>
+    `Please paraphrase the following text and use the following information to guide the paraphrasing. Only return a paraphrased sentence using the information below. Do not surround the output response in quotation marks. Generate an output response that is exactly ${sentenceNum} sentences long.
     
     Here is the document's intended title, which you can use to guide the subject of the sentence: ${docInfo.title}
     Here is the document's intended audience, which you can use to guide the writing style of the sentence: ${docInfo.audience}
     Here is the document's intended tone, which you can use to guide the tone of the sentence: ${docInfo.tone}
     Here is the document's intended style, which you can use to guide the writing style of the sentence: ${docInfo.style}
     
-    Write a sentence that comprehensively paraphrases the main ideas included in the following: ${inputText}`,
-  summarize: (inputText, docInfo) =>
-    `Please summarize the following text and use the following information to guide the summarization. Only return a summarized sentence using the information below. Do not surround the output response in quotation marks.
+     Generate an output response that is exactly ${sentenceNum} sentences long and comprehensively paraphrases the main ideas included in the following: ${inputText}`,
+  // summarize: (inputText, docInfo) =>
+  //   `Please summarize the following text and use the following information to guide the summarization. Only return a summarized sentence using the information below. Do not surround the output response in quotation marks.
+    
+  //   Here is the document's intended title, which you can use to guide the subject of the sentence: ${docInfo.title}
+  //   Here is the document's intended audience, which you can use to guide the writing style of the sentence: ${docInfo.audience}
+  //   Here is the document's intended tone, which you can use to guide the tone of the sentence: ${docInfo.tone}
+  //   Here is the document's intended style, which you can use to guide the writing style of the sentence: ${docInfo.style}
+    
+  //   Summarize the information below into a sentence that integrates the ideas included in the following: ${inputText}`
+  //   ,
+  simplify: (inputText, docInfo, sentenceNum) =>
+    `Please simplify the following text and use the following information to guide the simplification. Only return a simplified sentence using the information below. Do not surround the output response in quotation marks. Generate an output response that is exactly ${sentenceNum} sentences long.
     
     Here is the document's intended title, which you can use to guide the subject of the sentence: ${docInfo.title}
     Here is the document's intended audience, which you can use to guide the writing style of the sentence: ${docInfo.audience}
     Here is the document's intended tone, which you can use to guide the tone of the sentence: ${docInfo.tone}
     Here is the document's intended style, which you can use to guide the writing style of the sentence: ${docInfo.style}
+
+    Here is the document's intended prompt, which you can use to guide the intention of the sentence: ${docInfo.prompt}
     
-    Summarize the information below into a sentence that integrates the ideas included in the following: ${inputText}`
+     Generate an output response that is exactly ${sentenceNum} sentences long and simplifies the following information to concicely convey the following: ${inputText}`
     ,
-  simplify: (inputText, docInfo) =>
-    `Please simplify the following text and use the following information to guide the simplification. Only return a simplified sentence using the information below. Do not surround the output response in quotation marks.
+  combine: (inputText, docInfo, sentenceNum) =>
+    `Please combine the following text and use the following information to guide the combination. Only return a combined sentence using the information below. Do not surround the output response in quotation marks. Your response must be exactly ${sentenceNum} sentences long.
     
     Here is the document's intended title, which you can use to guide the subject of the sentence: ${docInfo.title}
     Here is the document's intended audience, which you can use to guide the writing style of the sentence: ${docInfo.audience}
     Here is the document's intended tone, which you can use to guide the tone of the sentence: ${docInfo.tone}
     Here is the document's intended style, which you can use to guide the writing style of the sentence: ${docInfo.style}
     
-    Simplify the following information to create a concise sentence: ${inputText}`
-    ,
-  combine: (inputText, docInfo) =>
-    `Please combine the following text and use the following information to guide the combination. Only return a combined sentence using the information below. Do not surround the output response in quotation marks.
-    
-    Here is the document's intended title, which you can use to guide the subject of the sentence: ${docInfo.title}
-    Here is the document's intended audience, which you can use to guide the writing style of the sentence: ${docInfo.audience}
-    Here is the document's intended tone, which you can use to guide the tone of the sentence: ${docInfo.tone}
-    Here is the document's intended style, which you can use to guide the writing style of the sentence: ${docInfo.style}
-    
-    Combine the information below into a sentence that integrates the ideas included in the following: ${inputText}`,
+     Generate an output response that is exactly ${sentenceNum} sentences long and cohesively integrates the ideas included in the following: ${inputText}`,
 };
 
-const fetchChatGPTResponse = async (inputText, mode, docInfo, numSuggestions) => {
-  const prompt = promptMap[mode.toLowerCase()](inputText, docInfo);
+const fetchChatGPTResponse = async (inputText, mode, docInfo, numSuggestions, sentenceNum) => {
+  const prompt = promptMap[mode.toLowerCase()](inputText, docInfo, sentenceNum);
   const response = await axios.post(
     'https://api.openai.com/v1/chat/completions',
     {
@@ -70,7 +73,7 @@ const fetchChatGPTResponse = async (inputText, mode, docInfo, numSuggestions) =>
     {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer sk-proj-',
+        'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
       },
     }
   );
@@ -114,6 +117,7 @@ function SentenceRemixer() {
   const [, setOutput] = useAtom(outputAtom);
   const [docInfo] = useAtom(docInfoAtom);
   const [copyFirstSentence] = useAtom(copyFirstSentenceAtom);
+  const [sentenceNum] = useAtom(sentenceNumAtom);
   const [pasteFirstSentence] = useAtom(pasteFirstSentenceAtom);
   const [numSuggestions] = useAtom(numSuggestionsAtom);
   const [, setHistory] = useAtom(historyAtom);
@@ -132,7 +136,7 @@ function SentenceRemixer() {
     setLoading(true);
     try {
       let concatenatedInput = tagsInputList.join(' ');
-      const responses = await fetchChatGPTResponse(concatenatedInput, alignment, docInfo, numSuggestions);
+      const responses = await fetchChatGPTResponse(concatenatedInput, alignment, docInfo, numSuggestions, sentenceNum);
       setOutput(responses.slice(0, numSuggestions));
       setHistory((prev) => [
         ...prev,
@@ -153,11 +157,6 @@ function SentenceRemixer() {
     }
   };
 
-  const concatBookmarkedContent = (bookmarked) => bookmarked.map((tag) => tag.content);
-
-  // useEffect(() => {
-  //   setTagsInputList(concatBookmarkedContent(bookmarked));
-  // }, [bookmarked]);
 
   const handleInputChange = (event, newInputValue) => {
     setInputValue(newInputValue);
@@ -201,7 +200,7 @@ function SentenceRemixer() {
         aria-label="Platform"
       >
         <ToggleButton value="Paraphrase">Para</ToggleButton>
-        <ToggleButton value="Summarize">Sum</ToggleButton>
+        {/* <ToggleButton value="Summarize">Sum</ToggleButton> */}
         <ToggleButton value="Simplify">Simpl</ToggleButton>
         <ToggleButton value="Combine">Comb</ToggleButton>
       </ToggleButtonGroup>

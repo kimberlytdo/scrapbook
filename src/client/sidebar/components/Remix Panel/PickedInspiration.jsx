@@ -3,7 +3,8 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Box from '@mui/material/Box';
-import Tooltip from '@mui/material/Tooltip'
+import ShuffleIcon from '@mui/icons-material/Shuffle';
+import Tooltip from '@mui/material/Tooltip';
 import Pagination from '@mui/material/Pagination';
 import Select from '@mui/material/Select';
 import { Autocomplete, TextField } from '@mui/material';
@@ -17,6 +18,10 @@ import { BookmarkedAtom, tagsInputAtom } from '../state';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import IconButton from '@mui/material/IconButton';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import { Shuffle } from '@mui/icons-material';
 
 function PickedInspiration() {
   const [history, setHistory] = useAtom(InspoHistoryAtom);
@@ -25,7 +30,6 @@ function PickedInspiration() {
   const [remixInspoCurrentPage, setRemixInspoCurrentPage] = useState(1);
   const [tagsInputList, setTagsInputList] = useAtom(tagsInputAtom);
   const [inspoContent, setInspoContent] = useState("");
-
 
   useEffect(() => {
     getBookmarkedList();
@@ -58,18 +62,6 @@ function PickedInspiration() {
 
   return (
     <div>
-      {/* <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Age</InputLabel>
-            <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                label="Age"
-            >
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
-            </Select>
-        </FormControl> */}
       <Autocomplete
         value={inspoContent}
         onChange={(event, newValue) => {
@@ -81,25 +73,20 @@ function PickedInspiration() {
         options={
           bookmarked.length === 0 ? '' : bookmarked.map((item) => item.content)
         }
-        // getOptionLabel={(option) => {
-        //   const truncatedContent = option.slice(0, 20);
-        //   return option.length > 20
-        //     ? `${truncatedContent}...`
-        //     : truncatedContent;
-        // }}
         renderInput={(params) => {
           return <TextField {...params} label="Search inspiration" />;
         }}
       />
+      {inspoContent && (
+        <div>
       <Box>
         <Tooltip title="Copy to remix">
           <IconButton size="small">
-            <NoteAddIcon
+            <ShuffleIcon
               fontSize="small"
               onClick={() =>
                 setTagsInputList([
                   ...tagsInputList,
-                  // retrieveBookmarked(remixInspoCurrentPage),
                   inspoContent,
                 ])
               }
@@ -112,7 +99,6 @@ function PickedInspiration() {
               fontSize="small"
               onClick={() => {
                 navigator.clipboard.writeText(
-                  // retrieveBookmarked(remixInspoCurrentPage)
                   inspoContent
                 );
               }}
@@ -120,24 +106,15 @@ function PickedInspiration() {
           </IconButton>
         </Tooltip>
       </Box>
-      <Box
-        fontFamily={'Roboto'}
-        height={100}
-        sx={{ overflowY: 'auto', padding: 2 }}
-      >
-        {inspoContent}
-        {/* {retrieveBookmarked(remixInspoCurrentPage)} */}
-      </Box>
-      {/* <Pagination
-        count={remixInspoPageLength}
-        page={remixInspoCurrentPage}
-        size={'small'}
-        onChange={(e, page) => {
-          setRemixInspoCurrentPage(page);
-        }}
-        siblingCount={0}
-        boundaryCount={0}
-      /> */}
+        <Card sx={{ marginTop: 2 }}>
+          <CardContent>
+            <Typography variant="body2" color="text.secondary" sx={{ marginTop: 1 }}>
+              {inspoContent}
+            </Typography>
+          </CardContent>
+        </Card>
+        </div>
+      )}
     </div>
   );
 }

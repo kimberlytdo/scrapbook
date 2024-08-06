@@ -110,6 +110,13 @@ export const Theme = createTheme({
         },
       },
     },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          minWidth: '5.1rem',
+        },
+      },
+    },
     MuiAccordionDetails: {
       styleOverrides: {
         root: {

@@ -27,7 +27,7 @@ export default function SentenceRemixCustom() {
           control={<Switch checked={copyFirstSentence} onChange={handleCopySwitchChange} />} 
           label="Copy the first remixed sentence directly into the clipboard" 
         />
-            <Tooltip title="Remixes will be fine-tuned to where your text cursor is">
+            <Tooltip title="Remixes will be contextually fine-tuned to text you've selected">
             <FormControlLabel control={<Switch />} label="Suggest remixes based on what I'm currently typing" /></Tooltip>
             </FormGroup>
         </div>

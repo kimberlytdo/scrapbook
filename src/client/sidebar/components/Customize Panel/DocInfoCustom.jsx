@@ -47,6 +47,17 @@ export default function DocInfoCustom() {
           value={docInfo.style}
           onChange={handleChange}
         />
+
+      <TextField
+          id="prompt"
+          label="Writing Prompt"
+          type="search"
+          helperText="Specify the writing prompt associated with your document"
+          value={docInfo.prompt}
+          onChange={handleChange}
+          rows={4}
+          multiline
+        />
       </Stack>
     </div>
   );

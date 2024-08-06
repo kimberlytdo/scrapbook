@@ -8,8 +8,10 @@ export const docInfoAtom = atom({
     audience: '',
     tone: '',
     style: '',
+    prompt: '',
   });
 export const numSuggestionsAtom = atom(3);
+export const sentenceNumAtom = atom(2);
 export const copyFirstSentenceAtom = atom(false);
 export const pasteFirstSentenceAtom = atom(false);
 
