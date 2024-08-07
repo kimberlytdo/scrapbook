@@ -96,15 +96,15 @@ function WebAddInspo() {
   const fetchChatGPTResponse = async (prompt) => {
     try {
       const response = await axios.post(
-        'https://api.openai.com/v1/chat/completions',
+        process.env.REACT_APP_OPENAI_URL_BASE,
         {
-          model: 'gpt-3.5-turbo',
+          model: process.env.REACT_APP_OPENAI_MODEL,
           messages: [{ role: 'user', content: prompt }],
         },
         {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+            Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
           },
         }
       );

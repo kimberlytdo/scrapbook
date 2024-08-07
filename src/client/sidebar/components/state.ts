@@ -13,6 +13,7 @@ export const docInfoAtom = atom({
 export const numSuggestionsAtom = atom(3);
 export const sentenceNumAtom = atom(2);
 export const copyFirstSentenceAtom = atom(false);
+export const contextRemixAtom = atom(false);
 export const pasteFirstSentenceAtom = atom(false);
 
 export const tagsInputAtom = atom<string[]>([]);
