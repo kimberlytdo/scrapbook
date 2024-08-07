@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
-import { outputAtom, historyAtom, docInfoAtom, numSuggestionsAtom, copyFirstSentenceAtom, pasteFirstSentenceAtom, tagsInputAtom, BookmarkedAtom, sentenceNumAtom } from '../state';
+import {
+  outputAtom,
+  historyAtom,
+  docInfoAtom,
+  numSuggestionsAtom,
+  copyFirstSentenceAtom,
+  pasteFirstSentenceAtom,
+  tagsInputAtom,
+  BookmarkedAtom,
+  sentenceNumAtom,
+  contextRemixAtom,
+} from '../state';
 import axios from 'axios';
 import { Button } from '@mui/material';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -11,9 +22,9 @@ import Chip from '@mui/material/Chip';
 import Box from '@mui/material/Box';
 import { styled } from '@mui/system';
 import { Height } from '@mui/icons-material';
+import { serverFunctions } from '../../../utils/serverFunctions';
 
 const promptMap = {
-  
   paraphrase: (inputText, docInfo, sentenceNum) =>
     `Please paraphrase the following text and use the following information to guide the paraphrasing. Only return a paraphrased sentence using the information below. Do not surround the output response in quotation marks. Generate an output response that is exactly ${sentenceNum} sentences long.
     
@@ -25,12 +36,12 @@ const promptMap = {
      Generate an output response that is exactly ${sentenceNum} sentences long and comprehensively paraphrases the main ideas included in the following: ${inputText}`,
   // summarize: (inputText, docInfo) =>
   //   `Please summarize the following text and use the following information to guide the summarization. Only return a summarized sentence using the information below. Do not surround the output response in quotation marks.
-    
+
   //   Here is the document's intended title, which you can use to guide the subject of the sentence: ${docInfo.title}
   //   Here is the document's intended audience, which you can use to guide the writing style of the sentence: ${docInfo.audience}
   //   Here is the document's intended tone, which you can use to guide the tone of the sentence: ${docInfo.tone}
   //   Here is the document's intended style, which you can use to guide the writing style of the sentence: ${docInfo.style}
-    
+
   //   Summarize the information below into a sentence that integrates the ideas included in the following: ${inputText}`
   //   ,
   simplify: (inputText, docInfo, sentenceNum) =>
@@ -43,8 +54,7 @@ const promptMap = {
 
     Here is the document's intended prompt, which you can use to guide the intention of the sentence: ${docInfo.prompt}
     
-     Generate an output response that is exactly ${sentenceNum} sentences long and simplifies the following information to concicely convey the following: ${inputText}`
-    ,
+     Generate an output response that is exactly ${sentenceNum} sentences long and simplifies the following information to concicely convey the following: ${inputText}`,
   combine: (inputText, docInfo, sentenceNum) =>
     `Please combine the following text and use the following information to guide the combination. Only return a combined sentence using the information below. Do not surround the output response in quotation marks. Your response must be exactly ${sentenceNum} sentences long.
     
@@ -56,12 +66,18 @@ const promptMap = {
      Generate an output response that is exactly ${sentenceNum} sentences long and cohesively integrates the ideas included in the following: ${inputText}`,
 };
 
-const fetchChatGPTResponse = async (inputText, mode, docInfo, numSuggestions, sentenceNum) => {
+const fetchChatGPTResponse = async (
+  inputText,
+  mode,
+  docInfo,
+  numSuggestions,
+  sentenceNum
+) => {
   const prompt = promptMap[mode.toLowerCase()](inputText, docInfo, sentenceNum);
   const response = await axios.post(
-    'https://api.openai.com/v1/chat/completions',
+    process.env.REACT_APP_OPENAI_URL_BASE,
     {
-      model: 'gpt-3.5-turbo',
+      model: process.env.REACT_APP_OPENAI_MODEL,
       n: numSuggestions,
       messages: [
         {
@@ -73,7 +89,7 @@ const fetchChatGPTResponse = async (inputText, mode, docInfo, numSuggestions, se
     {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+        Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
       },
     }
   );
@@ -117,6 +133,7 @@ function SentenceRemixer() {
   const [, setOutput] = useAtom(outputAtom);
   const [docInfo] = useAtom(docInfoAtom);
   const [copyFirstSentence] = useAtom(copyFirstSentenceAtom);
+  const [contextRemix] = useAtom(contextRemixAtom);
   const [sentenceNum] = useAtom(sentenceNumAtom);
   const [pasteFirstSentence] = useAtom(pasteFirstSentenceAtom);
   const [numSuggestions] = useAtom(numSuggestionsAtom);
@@ -131,12 +148,35 @@ function SentenceRemixer() {
     setAlignment(newAlignment);
   };
 
+  async function getSelection() {
+    if (contextRemix) {
+      try {
+        let text = await serverFunctions.copyInspiration();
+        return text;
+      } catch (error) {
+        console.error('Error copying current selection:', error);
+        return ""
+      }
+    }
+    else {
+      return ""
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    let currentSelection = await getSelection();
     try {
       let concatenatedInput = tagsInputList.join(' ');
-      const responses = await fetchChatGPTResponse(concatenatedInput, alignment, docInfo, numSuggestions, sentenceNum);
+      concatenatedInput += " " + currentSelection;
+      const responses = await fetchChatGPTResponse(
+        concatenatedInput,
+        alignment,
+        docInfo,
+        numSuggestions,
+        sentenceNum
+      );
       setOutput(responses.slice(0, numSuggestions));
       setHistory((prev) => [
         ...prev,
@@ -156,7 +196,6 @@ function SentenceRemixer() {
       setLoading(false);
     }
   };
-
 
   const handleInputChange = (event, newInputValue) => {
     setInputValue(newInputValue);
@@ -182,11 +221,10 @@ function SentenceRemixer() {
   //     setTagsInputList(JSON.parse(savedTags));
   //   }
   // }, []);
-  
+
   // useEffect(() => {
   //   localStorage.setItem('tagsInputList', JSON.stringify(tagsInputList));
   // }, [tagsInputList]);
-  
 
   return (
     <div>
@@ -235,7 +273,12 @@ function SentenceRemixer() {
         )}
       />
 
-      <Button variant="contained" onClick={handleSubmit} disabled={loading} fullWidth="true">
+      <Button
+        variant="contained"
+        onClick={handleSubmit}
+        disabled={loading}
+        fullWidth="true"
+      >
         {loading ? 'Loading...' : 'Remix It!'}
       </Button>
     </div>
