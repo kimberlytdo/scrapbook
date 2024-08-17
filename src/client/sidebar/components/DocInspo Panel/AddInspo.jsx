@@ -44,6 +44,7 @@ function WebAddInspo() {
       };
       setHistory([...history, newRecord]);
       setID(ID + 1);
+      logTestMessage(inspoText);
       setInspoText('');
       setTitle('');
     }
@@ -61,6 +62,7 @@ function WebAddInspo() {
       setHistory([...history, newRecord]);
       setUrlText([...urlText, newRecord]);
       console.log(urlText);
+      logTestMessage(inspoText);
       setID(ID + 1);
       setInspoText('');
       setTitle('');
@@ -162,6 +164,22 @@ function WebAddInspo() {
     setSelectedSource(event.target.value);
   };
 
+  const logTestMessage = async (inspoText) => {
+    try {
+      await serverFunctions.testLogging();
+      const docName = await serverFunctions.getDocumentName();
+      const logMessage = {
+        docName: docName,
+        inspoText: inspoText,
+      };
+      const logMessageString = JSON.stringify(logMessage, null, 2); 
+      await serverFunctions.logToCloud(logMessageString);
+      console.log(logMessageString);
+    } catch (error) {
+      console.error('Error calling test log function:', error);
+    }
+  };
+  
   return (
     <div>
      <FormControl component="fieldset">

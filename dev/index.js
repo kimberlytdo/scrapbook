@@ -6,6 +6,7 @@ const { FILENAME, PORT } = process.env;
 
 const DevServer = () => {
   const iframe = React.useRef(null);
+
   useEffect(() => {
     const handleRequest = (event) => {
       const request = event.data;
@@ -13,11 +14,16 @@ const DevServer = () => {
 
       if (type !== 'REQUEST') return;
 
+      // Determine the URL based on the environment
+      const origin = process.env.NODE_ENV === 'development' 
+        ? `https://localhost:${PORT}`
+        : '*'; // In production, use wildcard or specify the actual origin if known
+
       serverFunctions[functionName](...args)
         .then((response) => {
           iframe.current.contentWindow.postMessage(
             { type: 'RESPONSE', id, status: 'SUCCESS', response },
-            `https://localhost:${PORT}`
+            origin
           );
         })
         .catch((err) => {
@@ -28,17 +34,21 @@ const DevServer = () => {
               status: 'ERROR',
               response: err,
             },
-            `https://localhost:${PORT}`
+            origin
           );
         });
     };
 
     window.addEventListener('message', handleRequest, false);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener('message', handleRequest, false);
+    };
   }, []);
 
   return (
     <div
-      // we want our dev environment to fill the dialog window
       style={{
         width: '100%',
         height: '100%',
@@ -52,7 +62,12 @@ const DevServer = () => {
           position: 'absolute',
         }}
         ref={iframe}
-        src={`https://localhost:${PORT}/${FILENAME}-impl.html`}
+        // Set the iframe source based on the environment
+        src={
+          process.env.NODE_ENV === 'development' 
+            ? `https://localhost:${PORT}/${FILENAME}-impl.html`
+            : `/${FILENAME}-impl.html` // Use relative path in production
+        }
         allow={'clipboard-read; clipboard-write'}
       />
     </div>

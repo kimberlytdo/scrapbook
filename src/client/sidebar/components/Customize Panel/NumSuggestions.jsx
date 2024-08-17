@@ -1,9 +1,8 @@
-// NumSuggestions.jsx
 import React from 'react';
 import Slider from '@mui/material/Slider';
 import Box from '@mui/material/Box';
-import { useAtom } from 'jotai';
 import Typography from '@mui/material/Typography';
+import { useAtom } from 'jotai';
 import { numSuggestionsAtom } from '../state';
 
 export default function NumSuggestions() {
@@ -13,21 +12,13 @@ export default function NumSuggestions() {
     setNumSuggestions(newValue);
   };
 
-  const defaultNumSuggestionSpec =
-    process.env.REACT_APP_OPENAI_MODEL.startsWith('chatgpt') ?
-    {
-      defaultSuggestionNum: 3,
-      adjustment: true,
-    }:
-    {
-      defaultSuggestionNum: 1,
-      adjustment: false,
-    }
+  const defaultNumSuggestions = process.env.REACT_APP_OPENAI_MODEL.startsWith('chatgpt') ? 3 : 1;
 
-  if (!process.env.REACT_APP_OPENAI_MODEL.startsWith('chatgpt')) {
-    // override chatgpt setting if using other OPENAI-compatible APIs
-    setNumSuggestions(defaultNumSuggestionSpec.defaultSuggestionNum);
-  }
+  React.useEffect(() => {
+    if (numSuggestions === undefined || numSuggestions === null) {
+      setNumSuggestions(defaultNumSuggestions);
+    }
+  }, [setNumSuggestions, numSuggestions, defaultNumSuggestions]);
 
   return (
     <div>
@@ -35,7 +26,7 @@ export default function NumSuggestions() {
       <Box sx={{ width: 'auto' }}>
         <Slider
           aria-label="Number of Suggestions"
-          defaultValue={defaultNumSuggestionSpec.defaultSuggestionNum}
+          defaultValue={defaultNumSuggestions}
           valueLabelDisplay="auto"
           step={1}
           marks
@@ -43,7 +34,6 @@ export default function NumSuggestions() {
           max={5}
           value={numSuggestions}
           onChange={handleSliderChange}
-          disabled={!defaultNumSuggestionSpec.adjustment}
         />
       </Box>
     </div>

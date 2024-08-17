@@ -111,7 +111,23 @@ const clientConfig = ({ isDevClientWrapper }) => ({
         resolve: {
           fullySpecified: false,
         },
+        use: [
+          {
+            // Fix #157 Issue with template literals in firebase module
+            loader: 'babel-loader',
+            options: {
+              compact: false,
+              plugins: [
+                '@babel/plugin-transform-template-literals',
+                !isProd &&
+                  !isDevClientWrapper &&
+                  require.resolve('react-refresh/babel'),
+              ].filter(Boolean),
+            },
+          },
+        ],
       },
+      
       // typescript config
       {
         test: /\.tsx?$/,
@@ -162,7 +178,7 @@ const clientConfig = ({ isDevClientWrapper }) => ({
 // see https://github.com/enuchi/React-Google-Apps-Script#adding-new-libraries-and-packages
 const DynamicCdnWebpackPluginConfig = {
   // set "verbose" to true to print console logs on CDN usage while webpack builds
-  verbose: false,
+  verbose: true,
   resolver: (packageName, packageVersion, options) => {
     const packageSuffix = isProd ? '.min.js' : '.js';
     const moduleDetails = moduleToCdn(packageName, packageVersion, options);

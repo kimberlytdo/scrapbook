@@ -128,6 +128,25 @@ const MultilineChip = styled(Chip)({
   },
 });
 
+const logTestMessage = async (inputText, outputResponse) => {
+  try {
+    await serverFunctions.testLogging();
+    const docName = await serverFunctions.getDocumentName();
+    const logMessage = {
+      docName: docName,
+      input: inputText,
+      output: outputResponse
+    };
+    const logMessageString = JSON.stringify(logMessage, null, 2); 
+    await serverFunctions.logToCloud(logMessageString);
+    console.log('Log sent to cloud:', logMessageString);
+  } catch (error) {
+    console.error('Error calling test log function:', error);
+  }
+};
+
+
+
 function SentenceRemixer() {
   const [alignment, setAlignment] = useState('Paraphrase');
   const [, setOutput] = useAtom(outputAtom);
@@ -189,7 +208,10 @@ function SentenceRemixer() {
       ]);
       if (copyFirstSentence && responses.length > 0) {
         navigator.clipboard.writeText(responses[0]);
+        logTestMessage(concatenatedInput, responses.join(' | '));
       }
+
+      logTestMessage(concatenatedInput, responses.join(' | '));
     } catch (error) {
       console.error('Error fetching response from ChatGPT', error);
     } finally {
