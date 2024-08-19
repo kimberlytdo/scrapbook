@@ -21,19 +21,13 @@ import TextField from '@mui/material/TextField';
 import Chip from '@mui/material/Chip';
 import Box from '@mui/material/Box';
 import { styled } from '@mui/system';
-import { Height } from '@mui/icons-material';
 import { serverFunctions } from '../../../utils/serverFunctions';
+
+// const [contextRemix] = useAtom(contextRemixAtom);
 
 const promptMap = {
   paraphrase: (inputText, docInfo, sentenceNum) =>
-    `Please paraphrase the following text and use the following information to guide the paraphrasing. Only return a paraphrased sentence using the information below. Do not surround the output response in quotation marks. Generate an output response that is exactly ${sentenceNum} sentences long.
-    
-    Here is the document's intended title, which you can use to guide the subject of the sentence: ${docInfo.title}
-    Here is the document's intended audience, which you can use to guide the writing style of the sentence: ${docInfo.audience}
-    Here is the document's intended tone, which you can use to guide the tone of the sentence: ${docInfo.tone}
-    Here is the document's intended style, which you can use to guide the writing style of the sentence: ${docInfo.style}
-    
-     Generate an output response that is exactly ${sentenceNum} sentences long and comprehensively paraphrases the main ideas included in the following: ${inputText}`,
+    `Please combine and then paraphrase the following text using the provided information. Adjust the response based on the available details. If a title is provided, use it to guide the subject: ${docInfo.title || 'Use the content provided as the subject'}. If an audience is specified, tailor the writing style accordingly: ${docInfo.audience || 'Write for a general audience'}. If a tone is specified, adopt it: ${docInfo.tone || 'Adopt a neutral tone'}. If a style is specified, follow it: ${docInfo.style || 'Use a standard writing style'}. Generate an output that is exactly ${sentenceNum} sentences long, comprehensively paraphrasing the main ideas in the following text: ${inputText}. ${contextRemixAtom && getSelection()? `Make sure the output text integrates smoothly with the following context: ${getSelection()}.` : ''} Generate an output that is exactly ${sentenceNum} sentences long, comprehensively paraphrasing the main ideas in the following text: ${inputText}. Note that an output of 0 sentences would refer to a fragment or phrase, not a complete sentence. Do not surround the output response in quotation marks. Only return the suggested paraphrase; do not respond with a greeting or any other additional information.`,
   // summarize: (inputText, docInfo) =>
   //   `Please summarize the following text and use the following information to guide the summarization. Only return a summarized sentence using the information below. Do not surround the output response in quotation marks.
 
@@ -45,25 +39,9 @@ const promptMap = {
   //   Summarize the information below into a sentence that integrates the ideas included in the following: ${inputText}`
   //   ,
   simplify: (inputText, docInfo, sentenceNum) =>
-    `Please simplify the following text and use the following information to guide the simplification. Only return a simplified sentence using the information below. Do not surround the output response in quotation marks. Generate an output response that is exactly ${sentenceNum} sentences long.
-    
-    Here is the document's intended title, which you can use to guide the subject of the sentence: ${docInfo.title}
-    Here is the document's intended audience, which you can use to guide the writing style of the sentence: ${docInfo.audience}
-    Here is the document's intended tone, which you can use to guide the tone of the sentence: ${docInfo.tone}
-    Here is the document's intended style, which you can use to guide the writing style of the sentence: ${docInfo.style}
-
-    Here is the document's intended prompt, which you can use to guide the intention of the sentence: ${docInfo.prompt}
-    
-     Generate an output response that is exactly ${sentenceNum} sentences long and simplifies the following information to concicely convey the following: ${inputText}`,
+    `Please simplify the following text using the provided information. Before simpligying the text, you may need to first combine the information into a logical statement. Adjust the response based on the available details. If a title is provided, use it to guide the subject: ${docInfo.title || 'Use the content provided as the subject'}. If an audience is specified, tailor the writing style accordingly: ${docInfo.audience || 'Write for a general audience'}. If a tone is specified, adopt it: ${docInfo.tone || 'Adopt a neutral tone'}. If a style is specified, follow it: ${docInfo.style || 'Use a standard writing style'}. If a prompt is provided, guide the intention of the sentence accordingly: ${docInfo.prompt || 'No specific intention provided'}. Generate an output that is exactly ${sentenceNum} sentences long and simplifies the following information to concisely convey the main ideas: ${inputText}. ${contextRemixAtom && getSelection() ? `Make sure the output text integrates smoothly with the following context: ${getSelection()}.` : ''} Generate an output that is exactly ${sentenceNum} sentences long, comprehensively paraphrasing the main ideas in the following text: ${inputText}. Note that an output of 0 sentences would refer to a fragment or phrase, not a complete sentence. Do not surround the output response in quotation marks. Only return the suggested paraphrase; do not respond with a greeting or any other additional information.`,
   combine: (inputText, docInfo, sentenceNum) =>
-    `Please combine the following text and use the following information to guide the combination. Only return a combined sentence using the information below. Do not surround the output response in quotation marks. Your response must be exactly ${sentenceNum} sentences long.
-    
-    Here is the document's intended title, which you can use to guide the subject of the sentence: ${docInfo.title}
-    Here is the document's intended audience, which you can use to guide the writing style of the sentence: ${docInfo.audience}
-    Here is the document's intended tone, which you can use to guide the tone of the sentence: ${docInfo.tone}
-    Here is the document's intended style, which you can use to guide the writing style of the sentence: ${docInfo.style}
-    
-     Generate an output response that is exactly ${sentenceNum} sentences long and cohesively integrates the ideas included in the following: ${inputText}`,
+    `Please combine the following text using the provided information. Adjust the response based on the available details. If a title is provided, use it to guide the subject: ${docInfo.title || 'Use the content provided as the subject'}. If an audience is specified, tailor the writing style accordingly: ${docInfo.audience || 'Write for a general audience'}. If a tone is specified, adopt it: ${docInfo.tone || 'Adopt a neutral tone'}. If a style is specified, follow it: ${docInfo.style || 'Use a standard writing style'}. Generate an output that is exactly ${sentenceNum}. ${contextRemixAtom && getSelection() ? `Make sure the output text integrates smoothly with the following context: ${getSelection()}.` : ''} Generate an output that is exactly ${sentenceNum} sentences long, comprehensively paraphrasing the main ideas in the following text: ${inputText}. Note that an output of 0 sentences would refer to a fragment or phrase, not a complete sentence. Do not surround the output response in quotation marks. Only return the suggested paraphrase; do not respond with a greeting or any other additional information.`,
 };
 
 const fetchChatGPTResponse = async (
@@ -130,7 +108,7 @@ const MultilineChip = styled(Chip)({
 
 const logTestMessage = async (inputText, outputResponse) => {
   try {
-    await serverFunctions.testLogging();
+    // await serverFunctions.testLogging();
     const docName = await serverFunctions.getDocumentName();
     const logMessage = {
       docName: docName,
@@ -210,7 +188,6 @@ function SentenceRemixer() {
         navigator.clipboard.writeText(responses[0]);
         logTestMessage(concatenatedInput, responses.join(' | '));
       }
-
       logTestMessage(concatenatedInput, responses.join(' | '));
     } catch (error) {
       console.error('Error fetching response from ChatGPT', error);

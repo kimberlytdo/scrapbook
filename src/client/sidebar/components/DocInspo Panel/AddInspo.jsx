@@ -148,7 +148,7 @@ function WebAddInspo() {
       } else {
         documentText = await serverFunctions.getDocumentText();
       }
-      const prompt = `Return an inspirational sentence that offers an original insight or ideas following text:\n\n${documentText}. The sentence should be in verbatim. Do not alter anything from the original source document. Provide an exact quote from the provided text. Do not surround the quote in quotation marks. If there is no text, say "Please try again".`;
+      const prompt = `Return an inspirational sentence that offers an original insight or possible inspiration by using the following text:\n\n${documentText}. The sentence should be in verbatim. Do not alter anything from the original source document. Provide an exact quote from the provided text. Do not surround the quote in quotation marks. If there is no text, say "Please try again".`;
       const response = await fetchChatGPTResponse(prompt);
       setInspoText(response);
     } catch (error) {
@@ -166,7 +166,7 @@ function WebAddInspo() {
 
   const logTestMessage = async (inspoText) => {
     try {
-      await serverFunctions.testLogging();
+      // await serverFunctions.testLogging();
       const docName = await serverFunctions.getDocumentName();
       const logMessage = {
         docName: docName,

@@ -23,7 +23,7 @@ export default function SentenceNum() {
           valueLabelDisplay="auto"
           step={1}
           marks
-          min={1}
+          min={0}
           max={5}
           value={sentenceNum}
           onChange={handleSliderChange}

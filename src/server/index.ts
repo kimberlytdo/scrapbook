@@ -10,6 +10,8 @@ import {
   getDocumentName
 } from "./doc"
 
+import { logToCloud, testLogging } from "./log"
+
 // Public functions must be exported as named exports
 export {
   onOpen,
@@ -18,4 +20,9 @@ export {
   copyInspiration,
   getDocumentName,
   getDocumentText
+};
+
+export {
+  logToCloud,
+  testLogging
 };
